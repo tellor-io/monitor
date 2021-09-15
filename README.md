@@ -27,4 +27,4 @@ If you have `pipenv` installed already:
 
 ## Starting the dashboard
 
-`pipenv run streamlit run monitorscripts/monitor.py`
+`pipenv run streamlit run monitorscripts/run.py`
