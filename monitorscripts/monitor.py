@@ -1,3 +1,4 @@
+from typing import Dict
 import pandas as pd
 import streamlit as st
 
@@ -5,10 +6,10 @@ from tellor_api_utils import TellorAPIUtils
 
 class Monitor:
 
-    def __init__(self, network) -> None:
-        self.networks = network
-        self.request_ids = []
-        self.tau = TellorAPIUtils(network)
+    def __init__(self, curr_monitored_ids:Dict) -> None:
+       
+        self.curr_monitored_ids = curr_monitored_ids
+        self.tau = TellorAPIUtils()
 
         self.status_df = pd.DataFrame()
         
@@ -21,11 +22,12 @@ class Monitor:
         
         list_of_dicts = []
 
-        for i in self.request_ids:
-            #add request Id status to df
-            request_id_dict = self.tau.get_request_id_status(i)
+        for network in self.curr_monitored_ids.keys():
+            for request_id in self.curr_monitored_ids[network]:
+                #add request Id status to df
+                request_id_dict = self.tau.get_request_id_status(request_id, network)
 
-            list_of_dicts.append(request_id_dict)
+                list_of_dicts.append(request_id_dict)
         
         self.status_df = pd.DataFrame(list_of_dicts)
         

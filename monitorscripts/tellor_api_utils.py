@@ -3,24 +3,20 @@ import time
 
 import pandas as pd
 import requests
-from requests.api import request
-import streamlit as st
 from web3 import Web3
-from web3.types import Timestamp
 
 #TELLOR API LINK (SUB THIS FOR BUILD 2)
 
 class TellorAPIUtils:
 
-    def __init__(self, network) -> None:
-        self.network = network
+    def __init__(self) -> None:
         self.tellor_api = "http://api.tellorscan.com/price/1/"
         self.time_gap = {
             "yellow": 12*60*60,
             "red": 24*60*60
         }
 
-    def get_request_id_status(self, request_id:int):
+    def get_request_id_status(self, request_id:int, network:str):
         '''Calls tellor api data and finds most most recent timestamp on a request Id.
         Input: 
         request_id (int)
@@ -28,10 +24,10 @@ class TellorAPIUtils:
         df (pandas.DataFrame)
         '''
 
-        if self.network == "mainnet":
+        if network == "mainnet":
             return self.get_tellor_api(request_id)
 
-        if self.network == "polygon":
+        if network == "polygon":
             return self.get_mesosphere_data(request_id)
 
     def get_tellor_api(self, request_id:int):
@@ -49,8 +45,9 @@ class TellorAPIUtils:
             self.time_gap["red"] = 23*60*60
         
         request_id_dict = {
+            "Network": "mainnet",
             "Request Id":request_id,
-            "Seconds Since Last Update": time.time() - last_timestamp,
+            "Hours Since Last Update": (time.time() - last_timestamp) / 3600,
             "Status": self.check_health(last_timestamp)
         }
         
@@ -71,8 +68,9 @@ class TellorAPIUtils:
         self.time_gap["red"] = 6*60*60
 
         request_id_dict = {
+            "Network": "polygon",
             "Request Id":request_id,
-            "Seconds Since Last Update": time.time() - last_timestamp,
+            "Hours Since Last Update": (time.time() - last_timestamp) / 3600,
             "Status": self.check_health(last_timestamp)
         }
 
@@ -89,5 +87,5 @@ class TellorAPIUtils:
 
         
 if __name__ == "__main__":
-    tau = TellorAPIUtils()
-    tau.request_tellor_api(10)
+    tau = TellorAPIUtils("polygon")
+    tau.get_mesosphere_data(6)
