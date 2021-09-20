@@ -1,8 +1,9 @@
+import os
 import time
 
 import pandas as pd
 import requests
-import streamlit as st
+from web3 import Web3
 
 #TELLOR API LINK (SUB THIS FOR BUILD 2)
 
@@ -15,13 +16,21 @@ class TellorAPIUtils:
             "red": 24*60*60
         }
 
-    def get_request_id_status(self, request_id:int):
+    def get_request_id_status(self, request_id:int, network:str):
         '''Calls tellor api data and finds most most recent timestamp on a request Id.
         Input: 
         request_id (int)
         Output:
         df (pandas.DataFrame)
         '''
+
+        if network == "mainnet":
+            return self.get_tellor_api(request_id)
+
+        if network == "polygon":
+            return self.get_mesosphere_data(request_id)
+
+    def get_tellor_api(self, request_id:int):
 
         #shape data from tellor api to json
         r = requests.get(self.tellor_api + str(request_id)).json()
@@ -35,21 +44,48 @@ class TellorAPIUtils:
         if request_id == 10:
             self.time_gap["red"] = 23*60*60
         
-        print(time.time() - last_timestamp)
         request_id_dict = {
+            "Network": "mainnet",
             "Request Id":request_id,
-            "Seconds Since Last Update": time.time() - last_timestamp,
-            "Status": "white"
+            "Hours Since Last Update": (time.time() - last_timestamp) / 3600,
+            "Status": self.check_health(last_timestamp)
         }
-
-        if time.time() - last_timestamp >= self.time_gap["red"]:
-            request_id_dict["Status"] = "red"
-        elif time.time() - last_timestamp >= self.time_gap["yellow"]:
-            request_id_dict["Status"] = "yellow"
+        
         #MVP: show requestId and status
         return request_id_dict
 
+    def get_mesosphere_data(self, request_id:int):
+
+        address = "0xACC2d27400029904919ea54fFc0b18Bf07C57875"
+        rpc_endpoint = "https://poly-mainnet.gateway.pokt.network/v1/lb/" + os.getenv('POKT_GATEWAY_URL')
+        w3 = Web3(Web3.HTTPProvider(rpc_endpoint))
+        tellor_mesosphere = w3.eth.contract(address, abi=open("abi.json").read())
+        curr_value = tellor_mesosphere.functions.getCurrentValue(request_id).call()
+        last_value = curr_value[1]
+        last_timestamp = curr_value[2]
+
+        self.time_gap["yellow"] = 5*60
+        self.time_gap["red"] = 6*60*60
+
+        request_id_dict = {
+            "Network": "polygon",
+            "Request Id":request_id,
+            "Hours Since Last Update": (time.time() - last_timestamp) / 3600,
+            "Status": self.check_health(last_timestamp)
+        }
+
+        return request_id_dict
+
+    def check_health(self, last_timestamp):
+        if time.time() - last_timestamp >= self.time_gap["red"]:
+            return "urgent"
+        elif time.time() - last_timestamp >= self.time_gap["yellow"]:
+            return "warning"
+        else:
+            return "healthy"
+
+
         
 if __name__ == "__main__":
-    tau = TellorAPIUtils()
-    tau.request_tellor_api(10)
+    tau = TellorAPIUtils("polygon")
+    tau.get_mesosphere_data(6)
