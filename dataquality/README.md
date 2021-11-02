@@ -13,3 +13,5 @@
  Finally, to view the data we've gotten, run `python3 dashboard_draft2.py`
  
  Your data will be available to see at http://127.0.0.1:8050/
+
+ fun!
