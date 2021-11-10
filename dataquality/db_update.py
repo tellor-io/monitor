@@ -7,13 +7,13 @@ import dateutil.parser
 import requests
 
 #connect to database
-con = sqlite3.connect('tellor_dashboard_v0.db')
+con = sqlite3.connect('tellor_dashboard_v1.db')
 c = con.cursor()
 
 
 ### HELPER FUNCTIONS
 def get_enddate(category, reqid):
-    df = pd.read_sql("SELECT * FROM tellor_table_2 where id ={} and category == '{}'".format(reqid, category), con)
+    df = pd.read_sql("SELECT * FROM tellor_datatable where id ={} and category == '{}'".format(reqid, category), con)
     return(max(list(df['timestamp'])))
 
 def time_convert(raw_time):
@@ -103,7 +103,8 @@ def chainlink_grabdata(contract, old_date, reqid, category, results, scale = 1):
 def chainlink_inversedata(contract, days_back, reqid, category, results, scale = 1):
     latest_data = contract.functions.latestRoundData().call()
     old_date = datetime.timestamp(datetime.now() - timedelta(days = days_back))
-    results.append((time_convert(latest_data[3]), latest_data[1] / scale, reqid, category))
+    price = 1 / (latest_data[1] / scale)
+    results.append((time_convert(latest_data[3]), price, reqid, category))
 
     curr_round_id = latest_data[0]
     current_date = latest_data[3]
@@ -216,7 +217,7 @@ for step in files59:
 
 ## add results to database
 
-c.executemany("insert into tellor_table_2 values(?, ?, ?, ?)", results)
+c.executemany("insert into tellor_datatable values(?, ?, ?, ?)", results)
 con.commit()
 print("database updated")
 
