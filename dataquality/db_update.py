@@ -196,6 +196,7 @@ for step in files:
         results.append((time57, price57, 57, 'defi-pulse'))
 
 '''
+
 #################
 ### COINAPI.IO - ETH/JPY
 #################

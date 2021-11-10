@@ -1,9 +1,11 @@
 import dash
 from dash import dcc
 from dash import html
+
 from dash import dash_table
 import plotly.express as px
 import pandas as pd
+import plotly.graph_objects as go
 
 app = dash.Dash(__name__)
 
@@ -15,20 +17,21 @@ from datetime import datetime, timedelta
 import pandas as pd
 import numpy as np
 from dateutil import parser
+import time
+import requests
 
 #connect to database
-con = sqlite3.connect('tellor_dashboard_v0.db')
+con = sqlite3.connect('tellor_dashboard_v1.db')
 c = con.cursor()
 
 df = pd.read_sql("SELECT * FROM tellor_datatable", con)
-
 df2 = df.sort_values(by="timestamp")
 
 ###################################
-### TELLOR DATA SECTION (1)
+###  DATA QUALITY SECTION (1)
 ###################################
 
-################################### FIGURE 0: ETH/USD
+################################### FIGURE 0: ETH/USD (ID:1)
 fig = px.line(df2.loc[df2.id == 1], x="timestamp", y="price",
                   color = 'category' , template = 'plotly_dark', title = 'ETH/USD',
                   color_discrete_sequence = ['aquamarine', 'tomato'])
@@ -40,19 +43,22 @@ fig.update_traces(hovertemplate = 'Price: %{y:$.2f}<extra></extra>')
 fig.update_traces(line=dict(width=1))
 fig.update_layout({'legend_title_text': ''})
 
-################################### FIGURE 01: BTC/USD
+################################### FIGURE 1: BTC/USD (ID:2)
+
 fig1 = px.line(df2.loc[df2.id == 2], x="timestamp", y="price",
-                  color="category", template = 'plotly_dark', title = 'BTC/USD')
+                  color="category", template = 'plotly_dark', title = 'BTC/USD', color_discrete_sequence = ['aquamarine','tomato'])
 fig1.update_layout(xaxis_title = 'date', title_x = 0.5)
 fig1.update_layout(hovermode="x")
 fig1.update_traces(hovertemplate = 'Price: %{y:$.2f}<extra></extra>')
 #fig1.update_layout({'plot_bgcolor': 'rgba(0, 0, 0, 0)','paper_bgcolor': 'rgba(0, 0, 0, 0)'})
-fig1.update_traces(line=dict(color="aquamarine", width=1))
+fig1.update_traces(line=dict(width=1))
 fig1.update_layout({'legend_title_text': ''})
 
-################################### FIGURE 0: AMPL/USD
+
+################################### FIGURE 2: AMPL/USD
 #fig2 = px.line(df4, x="timestamp", y="price",template = 'plotly_dark', title = 'AMPL/USD price via Tellor')
 fig2 = px.line(df2.loc[df2.id == 10], x="timestamp", y="price",template = 'plotly_dark', title = 'AMPL/USD', color = 'category', color_discrete_sequence = ['tomato','aquamarine', 'mediumslateblue'])
+
 fig2.update_layout(xaxis_title = 'date', title_x = 0.5)
 fig2.update_layout(hovermode="x")
 fig2.update_traces(hovertemplate = 'Price: %{y:$.2f}<extra></extra>')
@@ -90,6 +96,7 @@ tellor_api = "http://api.tellorscan.com/prices/1"
 time_gap = {"yellow": 12*60*60, "red": 24*60*60}
 r = requests.get(tellor_api)
 files = r.json()
+
 important_ids = [1, 2, 5, 10, 57]
 df_list = []
 for file in files:
@@ -112,6 +119,7 @@ app.layout = html.Div(children=[
                                     html.H2('TELLOR DASHBOARD'),
                                     html.P('''Visualising Tellor data with Plotly - Dash'''),
                                     
+
                                     dash_table.DataTable(
                                         id = 'table_id',
                                         columns = [{'name':i, 'id' : i} for i in df_tab.columns],
@@ -154,6 +162,14 @@ app.layout = html.Div(children=[
                                     dcc.Graph(
                                     id='tellor AMPL/USD',
                                     figure=fig2
+                                ),
+                                    dcc.Graph(
+                                    id='tellor ETH/BTC',
+                                    figure=fig3
+                                ),
+                                    dcc.Graph(
+                                    id='tellor DEFITVL',
+                                    figure=fig4
                                 )
                                   ])  
                                   ])
