@@ -6,6 +6,14 @@ import requests
 import pandas as pd
 import dateutil.parser
 
+#TODO : make tellor data retrieval a function
+#TODO : move abis to a different file. you can either make them python dicts in a .py or you can read for a .json
+#TODO : make a "Oracle" class (like a Tellor, chainlink, etc)
+#TODO : -- attributes: address, abi, (also build the contract object)
+#TODO : -- methods: get_data (abstract, defined in child classes)
+#TODO : ----- ^ for get_data(): create a flag called inited: if update, do db_update.py. else (if init, in other words), do db_init.py
+
+
 db_filename = 'tellor_dashboard_v1.db'
 
 ### set up db and create table with 4 columns; timestamp, price, requestid, and category

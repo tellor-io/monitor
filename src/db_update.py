@@ -6,6 +6,9 @@ import numpy as np
 import dateutil.parser
 import requests
 
+#TODO : move helpers to their own file (you could even centralize all the helpers across files)
+#TODO : 
+
 #connect to database
 con = sqlite3.connect('tellor_dashboard_v1.db')
 c = con.cursor()
