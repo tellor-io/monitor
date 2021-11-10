@@ -39,7 +39,7 @@ contract_t = w3.eth.contract(address = w3.toChecksumAddress(tellor_add), abi = t
 
 results = []
 scale = 1e6
-days_back = 60
+days_back = 1
 old_date = datetime.timestamp(datetime.now() - timedelta(days = days_back))
 
 req_ids = [1, 2, 5, 10, 57]
