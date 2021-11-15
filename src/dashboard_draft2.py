@@ -9,6 +9,7 @@ import plotly.graph_objects as go
 
 app = dash.Dash(__name__)
 
+#TODO : change figure names to be descriptive of what they are
 
 #connect to db
 import sqlite3

@@ -1,0 +1,7 @@
+pandas
+flask
+dash
+web3
+plotly
+requests
+numpy
