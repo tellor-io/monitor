@@ -5,6 +5,7 @@
  3. start venv by running: `source dataquality/bin/activate`
  4. enter the src folder as your working directory
  5. once you're in folder and have everything set up, install needed dependencies by running: `pip install -r requirements.txt`
+ 6. use example.env file to create a .env file in the src directory including your infura endpoint
  
  The database file named tellor.db is in this directory and what you will be using. You can update it with more current values by running `python3 monitor.py`
  
