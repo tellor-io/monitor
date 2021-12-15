@@ -22,7 +22,7 @@ import time
 import requests
 
 #connect to database
-con = sqlite3.connect('tellor_dashboard_v1.db')
+con = sqlite3.connect('../tellor_dashboard_v1.db')
 c = con.cursor()
 
 df = pd.read_sql("SELECT * FROM tellor_datatable", con)

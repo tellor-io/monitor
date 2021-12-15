@@ -14,7 +14,7 @@ import dateutil.parser
 #TODO : ----- ^ for get_data(): create a flag called inited: if update, do db_update.py. else (if init, in other words), do db_init.py
 
 
-db_filename = 'tellor_dashboard_v1.db'
+db_filename = '../tellor_dashboard_v1.db'
 
 ### set up db and create table with 4 columns; timestamp, price, requestid, and category
 con = sqlite3.connect(db_filename)
@@ -39,7 +39,7 @@ contract_t = w3.eth.contract(address = w3.toChecksumAddress(tellor_add), abi = t
 
 results = []
 scale = 1e6
-days_back = 1
+days_back = 60
 old_date = datetime.timestamp(datetime.now() - timedelta(days = days_back))
 
 req_ids = [1, 2, 5, 10, 57]
