@@ -5,11 +5,7 @@ from dash import dash_table
 import plotly.express as px
 import sqlite3
 import pandas as pd
-import json
-from web3 import Web3
-import datasource as ds
-import time
-import requests
+
 
 app = dash.Dash(__name__)
 
