@@ -21,7 +21,7 @@ else:
 print(init)
 
 
-days_back = 60
+days_back = 13
 results = []
 ids = [1, 2, 10]
 

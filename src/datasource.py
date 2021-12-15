@@ -62,7 +62,7 @@ def tellor_grabdata(init, ids, days_back, contract, results, con):
         else:
             old_date = helpers.get_enddate('tellor', id, con)
 
-        while (old_date < tellor_data[2]):
+        while old_date < datetime.fromtimestamp(tellor_data[2]):
             tellor_data = contract.functions.getDataBefore(id, tellor_data[2]).call()
             timestamp = datetime.fromtimestamp(int(tellor_data[2]))
             price = tellor_data[1] / scale
