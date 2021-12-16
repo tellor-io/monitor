@@ -79,7 +79,7 @@ def tellor_grabdata(init, ids, days_back, contract, results, con):
 def chainlink_grabdata(init, contract, id, days_back, results, con, scale = 1, inverse = False):
     latest_data = contract.functions.latestRoundData().call()
     if init:
-        old_date = datetime.timestamp(datetime.now() - timedelta(days = days_back))
+        old_date = datetime.now() - timedelta(days = days_back)
     else:
         old_date = helpers.get_enddate('chainlink', id, con)
 
@@ -92,7 +92,7 @@ def chainlink_grabdata(init, contract, id, days_back, results, con, scale = 1, i
     curr_round_id = latest_data[0]
     curr_date = latest_data[3]
 
-    while curr_date > old_date:
+    while datetime.fromtimestamp(curr_date) > old_date:
         curr_round_id = curr_round_id - 1
         past_data = contract.functions.getRoundData(curr_round_id).call()
         curr_date = past_data[3]
@@ -105,7 +105,7 @@ def chainlink_grabdata(init, contract, id, days_back, results, con, scale = 1, i
         results.append((helpers.time_convert(past_data[3]), price, id, "chainlink"))
 
 #ampleforth
-def ampl_grabdata(init, days_back, results):
+def ampl_grabdata(init, days_back, results, con):
     ampl_url = 'https://web-api.ampleforth.org/eth/oracle-history'
 
     r = requests.get(ampl_url)
@@ -120,7 +120,7 @@ def ampl_grabdata(init, days_back, results):
     if init:
         old_date = datetime.now() - timedelta(days = days_back)
     else:
-        old_date = helpers.get_enddate('ampleforth', 10)
+        old_date = helpers.get_enddate('ampleforth', 10, con)
 
     for i in range(0, len(new_timestamps)):
         if new_timestamps[i] > old_date:
