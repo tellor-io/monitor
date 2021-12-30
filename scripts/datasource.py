@@ -131,6 +131,7 @@ def ampl_grabdata(init, days_back, results, con):
 
 
 
+#heroku upsets me deeply
 
 def fill_database(results, c, con):
     #c.executemany("insert into tellor_datatable values(?, ?, ?, ?)", results)
