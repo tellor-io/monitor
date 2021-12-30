@@ -1,5 +1,8 @@
 #goal: create main data grabbing funcs (invlude boolean flag for init)
 import sqlite3
+
+import psycopg2
+from psycopg2.extras import execute_values
 from web3 import Web3
 from datetime import datetime, timedelta
 import requests
@@ -8,10 +11,10 @@ import helpers
 import os
 
 #database
-def database_connect(filename):
-    con = sqlite3.connect(filename)
+def database_connect(dbname, user, password, host):
+    con = psycopg2.connect(database = dbname, user = user, password = password, host = host)
     c = con.cursor()
-    c.execute(''' CREATE TABLE if not exists tellor_datatable (timestamp, price, id, oracle)''')
+    c.execute("CREATE TABLE IF NOT EXISTS test (time varchar, price float8, id integer, oracle varchar);")
     con.commit()
     return (c, con)
 
@@ -55,10 +58,10 @@ def tellor_grabdata(init, ids, days_back, contract, results, con):
         else:
             price = tellor_data[1] / scale
 
-        results.append((timestamp, price, id, 'tellor'))
+        results.append((str(timestamp), price, id, 'tellor'))
 
         if init:
-            old_date = datetime.timestamp(datetime.now() - timedelta(days = days_back))
+            old_date = (datetime.now() - timedelta(days = days_back))
         else:
             old_date = helpers.get_enddate('tellor', id, con)
 
@@ -68,10 +71,10 @@ def tellor_grabdata(init, ids, days_back, contract, results, con):
             price = tellor_data[1] / scale
             if id == 10:
                 #if timestamp.hour == 0:
-                results.append((timestamp, price / 1e12, id, 'tellor'))
+                results.append((str(timestamp), price / 1e12, id, 'tellor'))
 
             else:
-                results.append((timestamp, price, id, 'tellor'))
+                results.append((str(timestamp), price, id, 'tellor'))
 
 
 
@@ -87,7 +90,7 @@ def chainlink_grabdata(init, contract, id, days_back, results, con, scale = 1, i
         price = 1 / (latest_data[1] / scale)
     else:
         price = latest_data[1] / scale
-    results.append((helpers.time_convert(latest_data[3]), price, id, "chainlink"))
+    results.append((str(helpers.time_convert(latest_data[3])), price, id, "chainlink"))
 
     curr_round_id = latest_data[0]
     curr_date = latest_data[3]
@@ -102,7 +105,7 @@ def chainlink_grabdata(init, contract, id, days_back, results, con, scale = 1, i
         else:
             price = past_data[1] / scale
 
-        results.append((helpers.time_convert(past_data[3]), price, id, "chainlink"))
+        results.append((str(helpers.time_convert(past_data[3])), price, id, "chainlink"))
 
 #ampleforth
 def ampl_grabdata(init, days_back, results, con):
@@ -124,12 +127,13 @@ def ampl_grabdata(init, days_back, results, con):
 
     for i in range(0, len(new_timestamps)):
         if new_timestamps[i] > old_date:
-            results.append((new_timestamps[i], payload[i], 10, 'ampleforth'))
+            results.append((str(new_timestamps[i]), payload[i], 10, 'ampleforth'))
 
 
 
 
 def fill_database(results, c, con):
-    c.executemany("insert into tellor_datatable values(?, ?, ?, ?)", results)
+    #c.executemany("insert into tellor_datatable values(?, ?, ?, ?)", results)
+    execute_values(c,"INSERT INTO test (time, price, id, oracle) VALUES %s", results)
     con.commit()
     con.close()

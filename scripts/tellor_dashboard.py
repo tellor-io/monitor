@@ -5,16 +5,34 @@ from dash import dash_table
 import plotly.express as px
 import sqlite3
 import pandas as pd
+from sqlalchemy import create_engine
+import os
+from dotenv import load_dotenv
+
 
 
 app = dash.Dash(__name__)
 
 # connect to database
-con = sqlite3.connect('../data/tellor.db')
-c = con.cursor()
+load_dotenv('../.env')
+#con = sqlite3.connect('../data/tellor.db')
+#c = con.cursor()
 
-df = pd.read_sql("SELECT * FROM tellor_datatable", con)
-df2 = df.sort_values(by = "timestamp")
+engine_string = "postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}".format(
+    user = os.getenv('DB_USER'),
+    password = os.getenv('DB_PASSWORD'),
+    host = os.getenv('DB_HOST'),
+    port = 5432,
+    database = os.getenv('DB_NAME'),
+)
+
+engine = create_engine(engine_string)
+
+# read a table from database into pandas dataframe, replace "tablename" with your table name
+df = pd.read_sql_table('test',engine)
+
+#df = pd.read_sql("SELECT * FROM tellor_datatable", con)
+df2 = df.sort_values(by = "time")
 
 
 ###################################
@@ -22,7 +40,7 @@ df2 = df.sort_values(by = "timestamp")
 ###################################
 
 ################################### FIGURE 0: ETH/USD (ID:1)
-fig = px.line(df2.loc[df2.id == 1], x="timestamp", y="price",
+fig = px.line(df2.loc[df2.id == 1], x="time", y="price",
               color='oracle', template='plotly_dark', title='ETH/USD',
               color_discrete_sequence=['aquamarine', 'tomato'])
 
@@ -35,7 +53,7 @@ fig.update_layout({'legend_title_text': ''})
 
 ################################### FIGURE 1: BTC/USD (ID:2)
 
-fig1 = px.line(df2.loc[df2.id == 2], x="timestamp", y="price",
+fig1 = px.line(df2.loc[df2.id == 2], x="time", y="price",
                color="oracle", template='plotly_dark', title='BTC/USD',
                color_discrete_sequence=['aquamarine', 'tomato'])
 fig1.update_layout(xaxis_title='date', title_x=0.5)
@@ -47,7 +65,7 @@ fig1.update_layout({'legend_title_text': ''})
 
 ################################### FIGURE 2: AMPL/USD
 # fig2 = px.line(df4, x="timestamp", y="price",template = 'plotly_dark', title = 'AMPL/USD price via Tellor')
-fig2 = px.line(df2.loc[df2.id == 10], x="timestamp", y="price", template='plotly_dark', title='AMPL/USD',
+fig2 = px.line(df2.loc[df2.id == 10], x="time", y="price", template='plotly_dark', title='AMPL/USD',
                color='oracle', color_discrete_sequence=['aquamarine', 'tomato', 'mediumslateblue'])
 
 fig2.update_layout(xaxis_title='date', title_x=0.5)
