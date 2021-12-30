@@ -58,7 +58,7 @@ def tellor_grabdata(init, ids, days_back, contract, results, con):
         results.append((timestamp, price, id, 'tellor'))
 
         if init:
-            old_date = datetime.timestamp(datetime.now() - timedelta(days = days_back))
+            old_date = (datetime.now() - timedelta(days = days_back))
         else:
             old_date = helpers.get_enddate('tellor', id, con)
 

@@ -18,6 +18,7 @@ Taken from https://codepen.io/chriddyp/pen/bWLwgP.css
 
 /* Grid –––––––––––––––––––––––––––––––––––––––––––––––––– */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@600&display=swap');
 
 .container {
     position: relative;
@@ -231,15 +232,15 @@ Taken from https://codepen.io/chriddyp/pen/bWLwgP.css
   
   
   .main-svg{
-    font-family: "Roboto", sans-serif;
+    font-family: "Inconsolata", sans-serif;
   }
   
   .gtitle{
-    font-family: "Roboto", sans-serif;
+    font-family: "Inconsolata", sans-serif;
   }
   
   .g-title{
-    font-family: "Roboto", sans-serif;
+    font-family: "Inconsolata", sans-serif;
   }
   
   
@@ -419,10 +420,10 @@ Taken from https://codepen.io/chriddyp/pen/bWLwgP.css
   html, body{
     height: 100%;
   }
-  
+  /* LG right column text*/
   body {
-    background-color: #5d5f5f;
-    color: #d8d8d8;
+    background-color: #bfded3;
+    color: #3c4242;
     height: 100%;
     margin: 0;
     padding: 0;
@@ -433,13 +434,13 @@ Taken from https://codepen.io/chriddyp/pen/bWLwgP.css
   }
   
   h1, h2, h3, h4, h5 {
-    font-family: "Roboto", sans-serif;
+    font-family: "Inconsolata", sans-serif;
     letter-spacing: 2.1px;
-    font-size: 21px;
+    font-size: 30px;
     padding-left: 12px;
   }
   p {
-    font-family: "Roboto", sans-serif;
+    font-family: "Inconsolata", sans-serif;
     font-weight: 400;
     font-size: 14px;
     padding-left: 12px;
@@ -525,9 +526,9 @@ Taken from https://codepen.io/chriddyp/pen/bWLwgP.css
   
   #date {
     background-color: #1e1e1e;
-    font-family: "Open Sans Light";
+    font-family: "Inconsolata";
     font-weight: 400;
-    color: #dbdbdb;
+    color: #ffffff;
     border: 0.5px solid #dbdbdb44;
   }
   
