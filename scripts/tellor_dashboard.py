@@ -191,7 +191,7 @@ app.layout = html.Div(children=[
                                           'filter_query': '{hours since last update} >= 12 && {hours since last update} < 24',
                                           'column_id': 'hours since last update'
                                           },
-                                       'backgroundColor': '#d5d674',
+                                       'backgroundColor': '#5a5c5c',
                                        'color': 'white'
                                        },
                                       {'if': {'filter_query': '{hours since last update} < 12',
@@ -203,7 +203,7 @@ app.layout = html.Div(children=[
                                       {'if': {'filter_query': '{hours since last update} >= 24',
                                               'column_id': 'hours since last update'
                                               },
-                                       'backgroundColor': '#c45d49',
+                                       'backgroundColor': '#1a1a1a',
                                        'color': 'white'
                                        }
                                   ]
