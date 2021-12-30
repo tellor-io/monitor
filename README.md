@@ -1,5 +1,6 @@
 ### To run:
 
+=======
  1. Download directory by running: `git clone https://github.com/tellor-io/monitor.git`
  2. Create virtual environment by running: `python3 -m venv dataquality`
  3. Start venv by running: `source dataquality/bin/activate`
@@ -25,6 +26,7 @@ TODO:
 
 
  
+
 
 
 

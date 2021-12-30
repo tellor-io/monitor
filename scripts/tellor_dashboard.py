@@ -10,7 +10,7 @@ import pandas as pd
 app = dash.Dash(__name__)
 
 # connect to database
-con = sqlite3.connect('tellor.db')
+con = sqlite3.connect('../data/tellor.db')
 c = con.cursor()
 
 df = pd.read_sql("SELECT * FROM tellor_datatable", con)

@@ -3,12 +3,13 @@ import helpers as h
 import sqlite3
 import os
 from dotenv import load_dotenv
+import pandas as pd
 import json
 from web3 import Web3
 
-load_dotenv('.env')
+load_dotenv('../.env')
 
-filename = 'tellor.db'
+filename = '../data/tellor.db'
 con = sqlite3.connect(filename)
 c = con.cursor()
 c.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='tellor_datatable' ''')
@@ -26,8 +27,7 @@ results = []
 ids = [1, 2, 10]
 
 infura_link = os.getenv('INFURA_PROJECT_URL')
-api_key = os.getenv('API_KEY')
-with open('ext_data.json') as f:
+with open('../data/ext_data.json') as f:
     data = json.load(f)
 tellor_dict = data['tellor']
 chainlink_dict = data['chainlink']
@@ -59,7 +59,7 @@ def main():
     ds.chainlink_grabdata(init, cl_ampl_usd, 10, days_back, results, con, scale = 1e18)
 
     print('getting ampleforth data')
-    ds.ampl_grabdata(init, days_back, results)
+    ds.ampl_grabdata(init, days_back, results, con)
 
     ds.fill_database(results, c, con)
 
