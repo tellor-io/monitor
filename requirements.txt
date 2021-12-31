@@ -8,3 +8,4 @@ numpy
 gunicorn
 sqlalchemy
 psycopg2
+python-dotenv
