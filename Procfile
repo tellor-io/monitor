@@ -1,1 +1,1 @@
-web:gunicorn scripts.tellor_dashboard:server
+web: gunicorn scripts.tellor_dashboard:server
