@@ -10,6 +10,7 @@ import os
 from dotenv import load_dotenv
 
 app = dash.Dash(__name__)
+server = app.server
 
 load_dotenv('../.env')
 
@@ -233,5 +234,5 @@ app.layout = html.Div(children=[
 ])
 
 if __name__ == '__main__':
-    server = app.server
-    #app.run_server(debug=True)
+    #server = app.server
+    app.run_server(debug=True)
