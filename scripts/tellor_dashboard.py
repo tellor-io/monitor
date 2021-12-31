@@ -13,6 +13,7 @@ app = dash.Dash(__name__)
 
 load_dotenv('../.env')
 
+
 engine_string = "postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}".format(
     user = os.getenv('DB_USER'),
     password = os.getenv('DB_PASSWORD'),
@@ -168,7 +169,7 @@ table = []
 df_tel = df2[df2['oracle'] == 'tellor']
 
 for id in important_ids:
-    df_sub = df_tel[df_tel['id']== id]['timestamp'].max()
+    df_sub = df_tel[df_tel['id']== id]['time'].max()
     change = (datetime.now() - datetime.fromisoformat(df_sub)).total_seconds() / 3600
     table.append([id, change])
 
