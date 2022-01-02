@@ -30,7 +30,7 @@ else:
 
 print(init)
 """
-init = True
+init = False
 
 days_back = 13
 results = []

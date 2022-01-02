@@ -63,7 +63,7 @@ def tellor_grabdata(init, ids, days_back, contract, results, con):
         if init:
             old_date = (datetime.now() - timedelta(days = days_back))
         else:
-            old_date = helpers.get_enddate('tellor', id, con)
+            old_date = helpers.get_enddate('tellor', id)
 
         while old_date < datetime.fromtimestamp(tellor_data[2]):
             tellor_data = contract.functions.getDataBefore(id, tellor_data[2]).call()
@@ -84,7 +84,7 @@ def chainlink_grabdata(init, contract, id, days_back, results, con, scale = 1, i
     if init:
         old_date = datetime.now() - timedelta(days = days_back)
     else:
-        old_date = helpers.get_enddate('chainlink', id, con)
+        old_date = helpers.get_enddate('chainlink', id)
 
     if inverse:
         price = 1 / (latest_data[1] / scale)
@@ -123,7 +123,7 @@ def ampl_grabdata(init, days_back, results, con):
     if init:
         old_date = datetime.now() - timedelta(days = days_back)
     else:
-        old_date = helpers.get_enddate('ampleforth', 10, con)
+        old_date = helpers.get_enddate('ampleforth', 10)
 
     for i in range(0, len(new_timestamps)):
         if new_timestamps[i] > old_date:
