@@ -164,6 +164,8 @@ for file in files:
 df_tab = pd.DataFrame(df_list, columns=['id', 'price feed', 'hours since last update'])
 '''
 
+
+
 important_ids = [1, 2, 10]
 #timestamp, price, id, oracle)
 table = []

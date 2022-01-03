@@ -74,7 +74,7 @@ def main():
     ds.fill_database(results, c, con)
 
     #ds.tellor_additional(init, tellor_con, filename)
-
+    #test change
 
 if __name__ == "__main__":
     main()
