@@ -14,13 +14,26 @@ server = app.server
 
 load_dotenv('../.env')
 
-
+'''
 engine_string = "postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}".format(
     user = os.getenv('DB_USER'),
     password = os.getenv('DB_PASSWORD'),
     host = os.getenv('DB_HOST'),
     port = 5432,
     database = os.getenv('DB_NAME'),
+)
+'''
+DATABASE_URL = "postgres://tginevdpuhlbxt:6d44c78cafa134e07340100d3022cd6bca487b08d2c0c32032cb5dc6ac0ff7dd@ec2-54-224-194-214.compute-1.amazonaws.com:5432/dd7edpmfogtp9v"
+DB_HOST = 'ec2-54-224-194-214.compute-1.amazonaws.com'
+DB_NAME = 'dd7edpmfogtp9v'
+DB_USER = 'tginevdpuhlbxt'
+DB_PASSWORD = '6d44c78cafa134e07340100d3022cd6bca487b08d2c0c32032cb5dc6ac0ff7dd'
+engine_string = "postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}".format(
+    user = DB_USER,
+    password = DB_PASSWORD,
+    host = DB_HOST,
+    port = 5432,
+    database = DB_NAME,
 )
 
 engine = create_engine(engine_string)
