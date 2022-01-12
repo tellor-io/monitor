@@ -1,8 +1,4 @@
-from bs4 import BeautifulSoup
 import pandas as pd
-import cloudscraper
-from numpy import random
-from time import sleep
 from get_oracle_tx_data import scrape_and_save
 
 # Load csv into pandas dataframe
