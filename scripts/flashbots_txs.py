@@ -1,46 +1,19 @@
-import requests
 from bs4 import BeautifulSoup
-import time
-import json
 import pandas as pd
-
-# etherscan_key = os.getenv('ETHERSCAN_KEY')
-
-# Get tx hashes
-# hashes_request_url = f'https://api.etherscan.io/api?module=account&action=txlist&address=0xddbd2b932c763ba5b1b7ae3b362eac3e8d40121a&startblock=0&endblock=99999999&offset=10&sort=asc&apikey={etherscan_key}'
-
-# hashes = requests.get(hashes_request_url).json()['result']
-# print(hashes)
-
-# txn_hash = '0xe267acf0823f30513159c500f9e362a6afd20dad62b2bc4140be11f5101b4e88'
-# revert_count = 0
-# for tx_hash in hashes:
-#     print(json.dumps(tx_hash, indent=4))
-#     time.sleep(.1)
-
-#     etherscan_url = 'https://api.etherscan.io/api?module=transaction&action=getstatus&txhash={0}&apikey={1}'.format(tx_hash, etherscan_key)
-
-#     r = requests.get(etherscan_url)
-#     files = r.json()
-
-    
-#     if files['result']['errDescription'] == 'Reverted':
-#         revert_count+=1
-
-# print('revert count:', revert_count)
-
-# oracle_page = requests.get('https://etherscan.io/address/0xe8218cacb0a5421bc6409e498d9f8cc8869945ea')
-# soup = BeautifulSoup(oracle_page.text, 'html.parser')
-
-# soup.
+import cloudscraper
+from numpy import random
+from time import sleep
 
 
-# Get past transactions
+# Get past transactions from etherscan:
+# https://etherscan.io/address/0xe8218cacb0a5421bc6409e498d9f8cc8869945ea
+# Navigate to the bottom of the page and click "Download CSV Export"
+
 # Load csv into pandas dataframe
 print('Loading in csv...')
 df = pd.read_csv('~/tellor/monitor/data/oracle_txs_2022-01-12.csv', index_col=False)
 
-# Get rid of unneeded columns
+# Drop unneeded columns
 print('Dropping columns...')
 df.drop([
     'Blockno', 'UnixTimestamp', 'ContractAddress',
@@ -57,22 +30,61 @@ print('Shape', df.shape)
 # Keep only submitValue() transactions
 print('Dropping tipping txs...')
 df = df.loc[df['method'] == 'Submit Value']
+df.reset_index(drop=True, inplace=True)
 print('Shape', df.shape)
 
+# Add missing data columns
+df['using_flashbots'] = False
+df['reward_usd'] = .0
+df['reward_trb'] = .0
 
-for i, tx_hash in enumerate(df.txhash):
-    print(f'row {i}, tx hash {tx_hash}')
-# Iterate through tx hashes and 
-# fetch using-flashbots bool by scraping that etherscan page for that label
-# and also fetch the reward in TRB & USD and historical price of TRB at the time
-# Add bool to column in dataframe
+# Scrape etherscan tx pages
+scraper = cloudscraper.create_scraper()
+pages = []
 
-# Export dataframe to csv
+for i, (tx_hash, row) in enumerate(zip(df.txhash, df.index)):
 
-# Rows of submitValue txs
-# Columns: 
-# Tx num (nonce?), Date/time, reward TRB, reward USD, total fees paid ETH, ..
-# .. total fees paid USD, using Flashbots (bool), reporter address, tx status (reverted?),
+    if i > 1990:
+        sleep(random.uniform(.1, .3))  # Wait random time to help hide from bot detectorz
+        print(f'i {i}, row {row}, tx hash {tx_hash}')
+        url = f'https://etherscan.io/tx/{tx_hash}'
+        tx_page = scraper.get(url).text
+        pages.append((tx_page, row))
 
+print('pages', len(pages))
+# assert len(pages) == df.shape[0]
 
+# Add Flashbots & reward data (TRB & USD) to dataframe
+for (page, row) in pages:
+    soup = BeautifulSoup(page, 'html.parser')
+
+    # Identify Flashbots txs by looking for a Flashbots label,
+    # an element with the class name below:
+    found_fb = soup.find_all("a", {"class": "mb-1 mb-sm-0 u-label u-label--xs u-label--info"})
+
+    # Change column value if using Flashbots
+    if found_fb and "Flashbots" in found_fb[0].text:
+        print(f'row {row} using flashbots')
+        df.at[row,'using_flashbots'] = True
+    
+    # Find rewards element
+    found_reward = soup.find_all("span", attrs={"data-original-title":True})
+
+    if found_reward:
+        # Extract rewards
+        trb = float(found_reward[0].text)
+        price_trb = found_reward[0]['data-original-title']
+        price_trb = float(price_trb.replace('Current Price : $', '').replace(' / TRB', ''))
+
+        # Save reward values
+        df.at[row, 'reward_trb'] = trb
+        df.at[row, 'reward_usd'] = trb * price_trb
+
+# Verify scraped & saved data
+for i in range(1991, 1997):
+    print(f'i {i}')
+    print(df.iloc[i])
+    print(f'https://etherscan.io/tx/{df.iloc[i].txhash}')
+
+# Export updated dataframe
 
