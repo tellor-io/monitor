@@ -2,6 +2,17 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
+def plot(groupby, xlbl, ylbl):
+    groupby.plot(kind='bar')
+    plt.xlabel(xlbl)
+    plt.ylabel(ylbl)
+
+    ax = plt.gca()
+    ax.axes.xaxis.set_ticks([])
+
+    plt.show()
+
+
 df = pd.read_csv('~/tellor/monitor/combined2.csv', index_col=False)
 print(list(df.columns))
 
@@ -49,70 +60,32 @@ weeks = df.groupby(pd.Grouper(freq='W'))
 total_txs_per_wk = weeks.size()
 print(f'change in number of submitValue txs per week:')
 print(total_txs_per_wk)
-# total_txs_per_wk.plot(kind='bar')
-# plt.xlabel('weeks')
-# plt.ylabel('num txs')
-
-# ax = plt.gca()
-# ax.axes.xaxis.set_ticks([])
-
-# plt.show()
+# plot(total_txs_per_wk, 'weeks', 'num txs')
 
 weekly_gains = weeks['reward_usd'].sum()
 weekly_losses = weeks['txnfee(usd)'].sum()
 weekly_profit = weekly_gains - weekly_losses
 print(f'change in profit per week:')
 print(weekly_profit)
-# weekly_profit.plot(kind='bar')
-# plt.xlabel('weeks')
-# plt.ylabel('USD (rewards - fees)')
-
-# ax = plt.gca()
-# ax.axes.xaxis.set_ticks([])
-
-# plt.show()
+# plot(weekly_profit, 'weeks', 'USD (rewards - fees)')
 
 unique_reporters_per_week = weeks['from'].nunique()
 print(f'unique reporters per week:')
 print(unique_reporters_per_week)
-# unique_reporters_per_week.plot(kind='bar')
-# plt.xlabel('weeks')
-# plt.ylabel('num reporters')
-
-# ax = plt.gca()
-# ax.axes.xaxis.set_ticks([])
-
-# plt.show()
-
+# plot(unique_reporters_per_week, 'weeks', 'num reporters')
 
 print(f'time between value updates:')
 weekly_avg_update_time = weeks['time_diff'].mean()
 print(weekly_avg_update_time)
-# weekly_avg_update_time.plot(kind='bar')
-# plt.xlabel('weeks')
-# plt.ylabel('average minutes between submitValue txs')
+# plot(weekly_avg_update_time, 'weeks', 'average minutes between submitValue txs')
 
-# ax = plt.gca()
-# ax.axes.xaxis.set_ticks([])
-
-# plt.show()
-
-
+# TODO: fix
 # top_10_freq = weeks['from'].agg(lambda x: x.value_counts()[:10].sum())
 # below_top_10_freq = weeks['from'].agg(lambda x: x.value_counts()[10:].sum())
 # weekly_percent_top_10 = round(top_10_freq / below_top_10_freq)
-# weekly_percent_top_10.plot(kind='bar')
-# plt.xlabel('weeks')
-# plt.ylabel('percent')
-
-# ax = plt.gca()
-# ax.axes.xaxis.set_ticks([])
-
-# plt.show()
+# plot(weekly_percent_top_10, 'weeks', 'percent')
 
 # print(f'top ten percent most frequent reporters total profit per week:')
-
-
 
 ######################### FLASHBOTS #################################
 print()
@@ -132,15 +105,7 @@ flashbot_txs_per_wk = weeks.using_flashbots.sum()
 percent_fb_per_wk = round(flashbot_txs_per_wk / total_txs_per_wk * 100)
 print(f'Change in Flashbots usage per week:')
 print(percent_fb_per_wk)
-
-# percent_fb_per_wk.plot(kind='bar')
-# plt.xlabel('weeks')
-# plt.ylabel('percent')
-
-# ax = plt.gca()
-# ax.axes.xaxis.set_ticks([])
-
-# plt.show()
+plot(percent_fb_per_wk, 'weeks', 'percent')
 
 # reversions_per_week = weeks.loc[weeks['errcode'] == 'Reverted'].sum()
 reverts_per_wk = weeks['errcode'].apply(lambda x: x[x == 'Reverted'].count())
@@ -148,12 +113,4 @@ reverts_per_wk = weeks['errcode'].apply(lambda x: x[x == 'Reverted'].count())
 percent_reverts_per_wk = round(reverts_per_wk / total_txs_per_wk * 100)
 print(f'Change in tx reversions per week')
 print(percent_reverts_per_wk)
-
-# percent_reverts_per_wk.plot(kind='bar')
-# plt.xlabel('weeks')
-# plt.ylabel('percent')
-
-# ax = plt.gca()
-# ax.axes.xaxis.set_ticks([])
-
-# plt.show()
+plot(percent_reverts_per_wk, 'weeks', 'percent')

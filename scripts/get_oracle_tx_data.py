@@ -11,34 +11,34 @@ from time import sleep
 # https://etherscan.io/address/0xe8218cacb0a5421bc6409e498d9f8cc8869945ea
 # Navigate to the bottom of the page and click "Download CSV Export"
 
-# # Load csv into pandas dataframe
-# print('Loading in csv...')
-# df_txs = pd.read_csv('~/tellor/monitor/data/oracle_txs_2022-01-12.csv', index_col=False)
+# Load csv into pandas dataframe
+print('Loading in csv...')
+df_txs = pd.read_csv('~/tellor/monitor/data/oracle_txs_2022-01-12.csv', index_col=False)
 
-# # Drop unneeded columns
-# print('Dropping columns...')
-# df_txs.drop([
-#     'Blockno', 'UnixTimestamp', 'ContractAddress',
-#     'To', 'Value_IN(ETH)', 'Value_OUT(ETH)',
-#     'CurrentValue @ $3229.05/Eth', 'TxnFee(ETH)',
-#     'Historical $Price/Eth'],
-#     axis=1,
-#     inplace=True)
+# Drop unneeded columns
+print('Dropping columns...')
+df_txs.drop([
+    'Blockno', 'UnixTimestamp', 'ContractAddress',
+    'To', 'Value_IN(ETH)', 'Value_OUT(ETH)',
+    'CurrentValue @ $3229.05/Eth', 'TxnFee(ETH)',
+    'Historical $Price/Eth'],
+    axis=1,
+    inplace=True)
 
-# df_txs.columns = [name.lower() for name in df_txs.columns]
-# print(df_txs.iloc[2])
-# print('Shape', df_txs.shape)
+df_txs.columns = [name.lower() for name in df_txs.columns]
+print(df_txs.iloc[2])
+print('Shape', df_txs.shape)
 
-# # Keep only submitValue() transactions
-# print('Dropping tipping txs...')
-# df_txs = df_txs.loc[df_txs['method'] == 'Submit Value']
-# df_txs.reset_index(drop=True, inplace=True)
-# print('Shape', df_txs.shape)
+# Keep only submitValue() transactions
+print('Dropping tipping txs...')
+df_txs = df_txs.loc[df_txs['method'] == 'Submit Value']
+df_txs.reset_index(drop=True, inplace=True)
+print('Shape', df_txs.shape)
 
-# # Add missing data columns
-# df_txs['using_flashbots'] = False
-# df_txs['reward_usd'] = .0
-# df_txs['reward_trb'] = .0
+# Add missing data columns
+df_txs['using_flashbots'] = False
+df_txs['reward_usd'] = .0
+df_txs['reward_trb'] = .0
 
 def scrape_and_save(df, filename):
     # Scrape etherscan tx pages
@@ -92,6 +92,6 @@ def scrape_and_save(df, filename):
 
     assert len(pages) == df.shape[0]
 
-# scrape_and_save(df_txs, 'etherscan_tx_data.csv')
+scrape_and_save(df_txs, 'etherscan_tx_data.csv')
 
-# WARNING -- this script takes ~15 min to run
+# WARNING -- this script takes ~15 min or longer to run
