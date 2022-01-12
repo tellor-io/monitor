@@ -5,6 +5,8 @@ from numpy import random
 from time import sleep
 
 
+# WARNING -- this script takes ~15 min to run
+
 # Get past transactions from etherscan:
 # https://etherscan.io/address/0xe8218cacb0a5421bc6409e498d9f8cc8869945ea
 # Navigate to the bottom of the page and click "Download CSV Export"
@@ -43,16 +45,14 @@ scraper = cloudscraper.create_scraper()
 pages = []
 
 for i, (tx_hash, row) in enumerate(zip(df.txhash, df.index)):
-
-    if i > 1990:
-        sleep(random.uniform(.1, .3))  # Wait random time to help hide from bot detectorz
-        print(f'i {i}, row {row}, tx hash {tx_hash}')
-        url = f'https://etherscan.io/tx/{tx_hash}'
-        tx_page = scraper.get(url).text
-        pages.append((tx_page, row))
+    # if i > 1990:
+    sleep(random.uniform(.1, .3))  # Wait random time to help hide from bot detectorz
+    # print(f'i {i}, row {row}, tx hash {tx_hash}')
+    url = f'https://etherscan.io/tx/{tx_hash}'
+    tx_page = scraper.get(url).text
+    pages.append((tx_page, row))
 
 print('pages', len(pages))
-# assert len(pages) == df.shape[0]
 
 # Add Flashbots & reward data (TRB & USD) to dataframe
 for (page, row) in pages:
@@ -64,7 +64,6 @@ for (page, row) in pages:
 
     # Change column value if using Flashbots
     if found_fb and "Flashbots" in found_fb[0].text:
-        print(f'row {row} using flashbots')
         df.at[row,'using_flashbots'] = True
     
     # Find rewards element
@@ -81,10 +80,15 @@ for (page, row) in pages:
         df.at[row, 'reward_usd'] = trb * price_trb
 
 # Verify scraped & saved data
-for i in range(1991, 1997):
-    print(f'i {i}')
-    print(df.iloc[i])
-    print(f'https://etherscan.io/tx/{df.iloc[i].txhash}')
+# for i in range(1991, 1997):
+#     print(f'i {i}')
+#     print(df.iloc[i])
+#     print(f'https://etherscan.io/tx/{df.iloc[i].txhash}')
 
 # Export updated dataframe
+df.to_csv('etherscan_tx_data.csv', index=False)
+print('Saved scraped data')
 
+assert len(pages) == df.shape[0]
+
+# WARNING -- this script takes ~15 min to run
