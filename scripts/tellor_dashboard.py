@@ -7,6 +7,8 @@ import plotly.express as px
 import pandas as pd
 from sqlalchemy import create_engine
 import os
+import requests
+import time
 from dotenv import load_dotenv
 
 app = dash.Dash(__name__)
@@ -159,38 +161,31 @@ fig2.update_layout(
     )
 )
 
-'''
+
 ### TABLE FOR UPDATE MONITORING
-tellor_api = "http://api.tellorscan.com/prices/1"
-time_gap = {"yellow": 12 * 60 * 60, "red": 24 * 60 * 60}
-r = requests.get(tellor_api)
+tellor_api = "http://api.tellorscan.com/prices/"
+id_ethusd = '0x0000000000000000000000000000000000000000000000000000000000000001'
+id_btcusd = '0x0000000000000000000000000000000000000000000000000000000000000002'
+id_amplusd = '0x000000000000000000000000000000000000000000000000000000000000000a'
+id_trbusd = '0x0000000000000000000000000000000000000000000000000000000000000032'
+relevant_ids = [id_ethusd, id_btcusd, id_amplusd, id_trbusd]
+endpoint = "-".join(relevant_ids)
+full_url = tellor_api + endpoint
+
+r = requests.get(full_url)
 files = r.json()
-
-important_ids = [1, 2, 5, 10, 57]
 df_list = []
+dataspecs = {'0x0000000000000000000000000000000000000000000000000000000000000001' : "ETH/USD",
+            '0x0000000000000000000000000000000000000000000000000000000000000002' : "BTC/USD",
+            '0x000000000000000000000000000000000000000000000000000000000000000a' : "AMPL/USD",
+            '0x0000000000000000000000000000000000000000000000000000000000000032': "TRB/USD"}
+
 for file in files:
-    if int(file['id']) in important_ids:
-        time_update = int(file['timestamp'])
-        diff = round((time.time() - time_update) / 3600, 3)
-        df_list.append([file['id'], file['name'], diff])
+    diff = round((time.time() - int(file['timestamp'])) / 3600, 3)
+    curr_id = file['id']
+    df_list.append([dataspecs[curr_id], round(file['value'], 2), diff])
 
-df_tab = pd.DataFrame(df_list, columns=['id', 'price feed', 'hours since last update'])
-'''
-
-
-
-important_ids = [1, 2, 10]
-#timestamp, price, id, oracle)
-table = []
-df_tel = df2[df2['oracle'] == 'tellor']
-
-for id in important_ids:
-    df_sub = df_tel[df_tel['id']== id]['time'].max()
-    change = (datetime.now() - datetime.fromisoformat(df_sub)).total_seconds() / 3600
-    table.append([id, change])
-
-df_tab = pd.DataFrame(table, columns = ['id', 'hours since last update'])
-
+df_tab = pd.DataFrame(df_list, columns=['price feed', 'current price', 'hours since last update'])
 
 app.layout = html.Div(children=[
     html.Div(className='row',  # Define the row element
