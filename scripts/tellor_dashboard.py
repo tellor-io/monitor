@@ -202,7 +202,7 @@ app.layout = html.Div(children=[
                               dash_table.DataTable(
                                   id='table_id',
                                   columns=[{'name': i, 'id': i} for i in df_tab.columns],
-                                  data=df_tab.to_dict("rows"),
+                                  data=df_tab.to_dict("records"),
                                   style_cell={'textAlign': 'center'},
                                   style_data={'color': 'mediumslategray'},
                                   style_data_conditional=[
