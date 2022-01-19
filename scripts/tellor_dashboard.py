@@ -168,17 +168,21 @@ id_ethusd = '0x0000000000000000000000000000000000000000000000000000000000000001'
 id_btcusd = '0x0000000000000000000000000000000000000000000000000000000000000002'
 id_amplusd = '0x000000000000000000000000000000000000000000000000000000000000000a'
 id_trbusd = '0x0000000000000000000000000000000000000000000000000000000000000032'
-relevant_ids = [id_ethusd, id_btcusd, id_amplusd, id_trbusd]
+id_uspce = '0x0000000000000000000000000000000000000000000000000000000000000029'
+id_ethjpy = '0x000000000000000000000000000000000000000000000000000000000000003b'
+relevant_ids = [id_ethusd, id_btcusd, id_amplusd, id_uspce, id_trbusd, id_ethjpy]
 endpoint = "-".join(relevant_ids)
 full_url = tellor_api + endpoint
 
 r = requests.get(full_url)
 files = r.json()
 df_list = []
-dataspecs = {'0x0000000000000000000000000000000000000000000000000000000000000001' : "ETH/USD",
-            '0x0000000000000000000000000000000000000000000000000000000000000002' : "BTC/USD",
-            '0x000000000000000000000000000000000000000000000000000000000000000a' : "AMPL/USD",
-            '0x0000000000000000000000000000000000000000000000000000000000000032': "TRB/USD"}
+dataspecs = {id_ethusd : "ETH/USD",
+            id_btcusd : "BTC/USD",
+            id_amplusd : "AMPL/USD",
+            id_uspce : "USPCE",
+            id_trbusd: "TRB/USD",
+            id_ethjpy: "ETH/JPY"}
 
 for file in files:
     diff = round((time.time() - int(file['timestamp'])) / 3600, 3)
