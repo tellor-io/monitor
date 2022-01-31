@@ -9,3 +9,4 @@ gunicorn
 sqlalchemy
 psycopg2
 python-dotenv
+duneanalytics

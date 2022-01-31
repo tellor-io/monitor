@@ -49,7 +49,7 @@ df2 = df.sort_values(by = "time")
 ################################### FIGURE 0: ETH/USD (ID:1)
 fig = px.line(df2.loc[df2.id == 1], x="time", y="price",
               color='oracle', template='plotly', title='ETH/USD',
-              color_discrete_sequence=['#3fd491', '#233047', '#3c525c'])
+              color_discrete_sequence=['#898f8c','#3fd491', '#233047'])
 
 fig.update_layout(xaxis_title='date', title_x=0.5)
 fig.update_layout(hovermode="x")
