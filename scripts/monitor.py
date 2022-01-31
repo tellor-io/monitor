@@ -17,6 +17,11 @@ DB_NAME = os.getenv('DB_NAME')
 DB_USER = os.getenv('DB_USER')
 DB_PASSWORD = os.getenv('DB_PASSWORD')
 
+DUNE_USERNAME = os.getenv('DUNE_USERNAME')
+DUNE_PASSWORD = os.getenv('DUNE_PASSWORD')
+
+dune_login = (DUNE_USERNAME, DUNE_PASSWORD)
+
 #con = psycopg2.connect(dbname = DB_NAME, user = DB_USER, password = DB_PASSWORD, host = DB_HOST)
 #c = con.cursor()
 
@@ -30,9 +35,9 @@ else:
 
 print(init)
 """
-init = False
+init = True
 
-days_back = 13
+days_back = 47
 results = []
 ids = [1, 2, 10]
 
@@ -71,10 +76,13 @@ def main():
     print('getting ampleforth data')
     ds.ampl_grabdata(init, days_back, results, con)
 
-    ds.fill_database(results, c, con)
 
+    print('getting makerDAO data from dune analytics')
+    ds.makerdao_grabdata(init, results, dune_login)
     #ds.tellor_additional(init, tellor_con, filename)
     #test change
+
+    ds.fill_database(results, c, con)
 
 if __name__ == "__main__":
     main()

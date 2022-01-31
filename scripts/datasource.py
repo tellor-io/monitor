@@ -1,6 +1,6 @@
 #goal: create main data grabbing funcs (invlude boolean flag for init)
 import sqlite3
-
+import math
 import psycopg2
 from psycopg2.extras import execute_values
 from web3 import Web3
@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 import requests
 import pandas as pd
 import helpers
+from duneanalytics import DuneAnalytics
 import os
 
 #database
@@ -128,6 +129,26 @@ def ampl_grabdata(init, days_back, results, con):
     for i in range(0, len(new_timestamps)):
         if new_timestamps[i] > old_date:
             results.append((str(new_timestamps[i]), payload[i], 10, 'ampleforth'))
+
+
+### NOT AUTOMATIC YET
+def makerdao_grabdata(init, results, login):
+    dune = DuneAnalytics(login[0], login[1])
+    dune.login()
+    dune.fetch_auth_token()
+    result_id = dune.query_result_id(query_id = 136563)
+    data = dune.query_result(result_id)
+    data2 = data['data']['get_result_by_result_id']
+    for datum in data2:
+        time = datetime.fromisoformat(datum['data']['evt_block_time'])
+        time = time.replace(tzinfo = None)
+        hexstr = "0" + datum['data']['val'].replace("\\", "")
+        val = Web3.toInt(hexstr = hexstr)
+        #check for digits - why is this being weird?
+        digits = int(math.log10(val)) + 1
+        new_val = val / 10**(digits - 4)
+
+        results.append((time, new_val, 1, 'makerDAO'))
 
 
 
