@@ -176,6 +176,13 @@ for file in files:
 
 df_tab = pd.DataFrame(df_list, columns=['price feed', 'current price', 'hours since last update'])
 
+url = 'https://api.tellorscan.com/info'
+r2 = requests.get(url)
+files2 = r2.json()
+df_list2 = [[files2['stakerCount'], files2['disputeCount']]]
+df_tab2 = pd.DataFrame(df_list2, columns = ['number of stakers', 'number of disputes'])
+
+
 app.layout = html.Div(children=[
     html.Div(className='row',  # Define the row element
              children=[
@@ -183,7 +190,7 @@ app.layout = html.Div(children=[
                           children=[
                               html.H1('tellor dashboard'),
                               html.P('''visualising tellor data with plotly - dash'''),
-
+                              html.Br(),
                               dash_table.DataTable(
                                   id='table_id',
                                   columns=[{'name': i, 'id': i} for i in df_tab.columns],
@@ -211,7 +218,14 @@ app.layout = html.Div(children=[
                                        'color': 'white'
                                        }
                                   ]
-                              )
+                              ),
+                                html.Br(),
+                                dash_table.DataTable(
+                                  id='table2_id',
+                                  columns=[{'name': i, 'id': i} for i in df_tab2.columns],
+                                  data=df_tab2.to_dict("records"),
+                                  style_cell={'textAlign': 'center'},
+                                  style_data={'color': 'mediumslategray'})
 
                           ]),  # Define the left element
                  html.Div(className='eight columns div-for-charts bg-grey',

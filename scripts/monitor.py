@@ -19,6 +19,12 @@ if c.fetchone()[0] == 1:
 else:
 	init = True
 
+DUNE_USERNAME = os.getenv('DUNE_USERNAME')
+DUNE_PASSWORD = os.getenv('DUNE_PASSWORD')
+DUNE_QUERY_ID = int(os.getenv('DUNE_QUERY_ID'))
+
+dune_login = (DUNE_USERNAME, DUNE_PASSWORD)
+
 print(init)
 
 init = True
@@ -62,9 +68,12 @@ def main():
     print('getting ampleforth data')
     ds.ampl_grabdata(init, days_back, results, con)
 
+    print('getting makerDAO data from dune analytics')
+    ds.makerdao_grabdata(init, results, dune_login, DUNE_QUERY_ID)
+
     ds.fill_database(results, c, con)
 
-    ds.tellor_additional(init, tellor_con, filename)
+    #ds.tellor_additional(init, tellor_con, filename)
 
 
 if __name__ == "__main__":
