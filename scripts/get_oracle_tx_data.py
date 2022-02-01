@@ -13,14 +13,14 @@ from time import sleep
 
 # Load csv into pandas dataframe
 print('Loading in csv...')
-df_txs = pd.read_csv('~/tellor/monitor/data/oracle_txs_2022-01-12.csv', index_col=False)
+df_txs = pd.read_csv('~/Desktop/tellor/monitor/data/export-0xe8218cacb0a5421bc6409e498d9f8cc8869945ea.csv', index_col=False)
 
 # Drop unneeded columns
 print('Dropping columns...')
 df_txs.drop([
     'Blockno', 'UnixTimestamp', 'ContractAddress',
     'To', 'Value_IN(ETH)', 'Value_OUT(ETH)',
-    'CurrentValue @ $3229.05/Eth', 'TxnFee(ETH)',
+    'CurrentValue @ $2687.26/Eth', 'TxnFee(ETH)',
     'Historical $Price/Eth'],
     axis=1,
     inplace=True)
@@ -45,7 +45,9 @@ def scrape_and_save(df, filename):
     scraper = cloudscraper.create_scraper()
     pages = []
 
+    # LOOP ONE
     for i, (tx_hash, row) in enumerate(zip(df.txhash, df.index)):
+        print(i)
         # if i > 1990:
         sleep(random.uniform(.1, .3))  # Wait random time to help hide from bot detectorz
         # print(f'i {i}, row {row}, tx hash {tx_hash}')
@@ -55,8 +57,10 @@ def scrape_and_save(df, filename):
 
     print('pages', len(pages))
 
+    # LOOP TWO
     # Add Flashbots & reward data (TRB & USD) to dataframe
     for (page, row) in pages:
+        print('page,row')
         soup = BeautifulSoup(page, 'html.parser')
 
         # Identify Flashbots txs by looking for a Flashbots label,
@@ -65,6 +69,7 @@ def scrape_and_save(df, filename):
 
         # Change column value if using Flashbots
         if found_fb and "Flashbots" in found_fb[0].text:
+            print("found flashbots")
             df.at[row,'using_flashbots'] = True
         
         # Find rewards element
@@ -72,6 +77,7 @@ def scrape_and_save(df, filename):
 
         if found_reward:
             # Extract rewards
+            print("extract rewards")
             trb = float(found_reward[0].text)
             price_trb = found_reward[0]['data-original-title']
             price_trb = float(price_trb.replace('Current Price : $', '').replace(' / TRB', ''))
