@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 import requests
 import pandas as pd
 import helpers
+import math
+from duneanalytics import DuneAnalytics
 import os
 
 #database

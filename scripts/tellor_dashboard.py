@@ -32,7 +32,7 @@ df2 = df.sort_values(by = "timestamp")
 ################################### FIGURE 0: ETH/USD (ID:1)
 fig = px.line(df2.loc[df2.id == 1], x="timestamp", y="price",
               color='oracle', template='plotly', title='ETH/USD',
-              color_discrete_sequence=['#3fd491', '#233047'])
+              color_discrete_sequence=['#3fd491', '#233047', '#656e68'])
 
 fig.update_layout(xaxis_title='date', title_x=0.5)
 fig.update_layout(hovermode="x")

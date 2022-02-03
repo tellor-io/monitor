@@ -29,7 +29,7 @@ print(init)
 
 init = True
 
-days_back = 20
+days_back = 50
 results = []
 ids = [1, 2, 10]
 
