@@ -249,12 +249,12 @@ app.layout = html.Div(children=[
                                   figure=fig
                               ),
                               dcc.Graph(
-                                  id='tellor BTC/USD',
-                                  figure=fig1
-                              ),
-                              dcc.Graph(
                                   id='tellor AMPL/USD',
                                   figure=fig2
+                              ),
+                              dcc.Graph(
+                                  id='tellor BTC/USD',
+                                  figure=fig1
                               )
                           ])
              ])
