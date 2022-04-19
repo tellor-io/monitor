@@ -35,7 +35,7 @@ else:
 
 print(init)
 """
-init = True
+init = False
 
 days_back = 124
 results = []
