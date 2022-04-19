@@ -17,7 +17,7 @@ server = app.server
 load_dotenv('../.env')
 
 
-engine_string = "postgresql://{user}:{password}@{host}:{port}/{database}".format(
+engine_string = "postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}".format(
     user = os.getenv('DB_USER'),
     password = os.getenv('DB_PASSWORD'),
     host = os.getenv('DB_HOST'),
