@@ -25,7 +25,7 @@ engine_string = "postgresql+psycopg2://{user}:{password}@{host}:{port}/{database
     database = os.getenv('DB_NAME'),
 )
 
-engine = create_engine(engine_string)
+engine = create_engine(engine_string, isolation_level="READ UNCOMMITTED")
 df = pd.read_sql_table('test',engine)
 df2 = df.sort_values(by = "time")
 
