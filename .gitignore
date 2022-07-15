@@ -149,3 +149,4 @@ venv/
 env/
 .python-version
 *.csv
+dataquality/
