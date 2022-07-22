@@ -153,11 +153,15 @@ def makerdao_grabdata(init, results, login, id):
             times.append(time)
             values.append(val)
 
-    results.append((times[0], values[0], 1, 'makerDAO'))
+    if len(times) == 0 or len(values) == 0:
+        print("no makerDAO data retrieved")
+    
+    else:
+        results.append((times[0], values[0], 1, 'makerDAO'))
 
-    for i in range(1, len(values)):
-        if values[i] != values[i - 1]:
-            results.append((times[i], values[i], 1, 'makerDAO'))
+        for i in range(1, len(values)):
+            if values[i] != values[i - 1]:
+                results.append((times[i], values[i], 1, 'makerDAO'))
 
 def fill_database(results, c, con):
     c.executemany("insert into tellor_datatable values(?, ?, ?, ?)", results)
