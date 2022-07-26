@@ -82,7 +82,7 @@ def main():
     ds.ampl_grabdata(init, days_back, results, con)
 
     print('getting makerDAO data from dune analytics')
-    ds.makerdao_grabdata(init, results, dune_login)
+    ds.makerdao_grabdata(init, results, dune_login, id=13653)
     # ds.tellor_additional(init, tellor_con, filename)
     # test change
 

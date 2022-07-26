@@ -136,38 +136,6 @@ def ampl_grabdata(init, days_back, results, con):
 
 
 ### NOT AUTOMATIC YET
-def makerdao_grabdata(init, results, login):
-    dune = DuneAnalytics(login[0], login[1])
-    dune.login()
-    dune.fetch_auth_token()
-    result_id = dune.query_result_id(query_id = 136563)
-    data = dune.query_result(result_id)
-    data2 = data['data']['get_result_by_result_id']
-
-    times = []
-    values = []
-
-    for datum in data2:
-        time = datetime.fromisoformat(datum['data']['evt_block_time'])
-        time = time.replace(tzinfo = None)
-        hexstr = "0" + datum['data']['val'].replace("\\", "")
-        val = Web3.toInt(hexstr = hexstr) / 1e18
-        #check for digits - why is this being weird?
-        digits = int(math.log10(val)) + 1
-
-        if digits == 4:
-            times.append(time)
-            values.append(val)
-
-    results.append((times[0], values[0], 1, 'makerDAO'))
-
-    for i in range(1, len(values)):
-        if values[i] != values[i - 1]:
-            results.append((times[i], values[i], 1, 'makerDAO'))
-
-
-
-### NOT AUTOMATIC YET
 def makerdao_grabdata(init, results, login, id):
     dune = DuneAnalytics(login[0], login[1])
     dune.login()
