@@ -1,3 +1,5 @@
+import time
+
 import dash
 from dash import dcc
 from dash import html
@@ -161,28 +163,38 @@ relevant_ids = [id_ethusd, id_btcusd, id_amplusd, id_uspce, id_trbusd, id_ethjpy
 endpoint = "-".join(relevant_ids)
 full_url = tellor_api + endpoint
 
-r = requests.get(full_url)
-files = r.json()
-df_list = []
-dataspecs = {id_ethusd : "ETH/USD",
-            id_btcusd : "BTC/USD",
-            id_amplusd : "AMPL/USD",
-            id_uspce : "USPCE",
-            id_trbusd: "TRB/USD",
-            id_ethjpy: "ETH/JPY"}
+try:
+    r = requests.get(full_url)
+    files = r.json()
+    df_list = []
+    dataspecs = {id_ethusd : "ETH/USD",
+                id_btcusd : "BTC/USD",
+                id_amplusd : "AMPL/USD",
+                id_uspce : "USPCE",
+                id_trbusd: "TRB/USD",
+                id_ethjpy: "ETH/JPY"}
 
-for file in files:
-    diff = round((time.time() - int(file['timestamp'])) / 3600, 3)
-    curr_id = file['id']
-    df_list.append([dataspecs[curr_id], round(file['value'], 2), diff])
+    
+    for file in files:
+        diff = round((time.time() - int(file['timestamp'])) / 3600, 3)
+        curr_id = file['id']
+        df_list.append([dataspecs[curr_id], round(file['value'], 2), diff])
 
-df_tab = pd.DataFrame(df_list, columns=['price feed', 'current price', 'hours since last update'])
+    df_tab = pd.DataFrame(df_list, columns=['price feed', 'current price', 'hours since last update'])
 
-url = 'https://api.tellorscan.com/info'
-r2 = requests.get(url)
-files2 = r2.json()
-df_list2 = [[files2['stakerCount'], files2['disputeCount']]]
-df_tab2 = pd.DataFrame(df_list2, columns = ['number of stakers', 'number of disputes'])
+    url = 'https://api.tellorscan.com/info'
+    r2 = requests.get(url)
+    files2 = r2.json()
+    df_list2 = [[files2['stakerCount'], files2['disputeCount']]]
+    df_tab2 = pd.DataFrame(df_list2, columns = ['number of stakers', 'number of disputes'])
+
+except requests.exceptions.JSONDecodeError:
+    print("unable to retrieve data")
+    df_tab = pd.DataFrame([], columns = ['price feed', 'current price', 'hours since last update'])
+    df_tab2 = pd.DataFrame([], columns = ['number of stakers', 'number of disputes'])
+
+
+
 
 app.layout = html.Div(children=[
     html.Div(className='row',  # Define the row element

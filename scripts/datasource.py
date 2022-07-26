@@ -1,5 +1,6 @@
 #goal: create main data grabbing funcs (invlude boolean flag for init)
 import math
+import sqlite3
 import psycopg2
 from psycopg2.extras import execute_values
 from web3 import Web3
@@ -7,6 +8,7 @@ from datetime import datetime, timedelta
 import requests
 import pandas as pd
 import helpers
+import math
 from duneanalytics import DuneAnalytics
 import os
 
@@ -134,11 +136,11 @@ def ampl_grabdata(init, days_back, results, con):
 
 
 ### NOT AUTOMATIC YET
-def makerdao_grabdata(init, results, login):
+def makerdao_grabdata(init, results, login, id):
     dune = DuneAnalytics(login[0], login[1])
     dune.login()
     dune.fetch_auth_token()
-    result_id = dune.query_result_id(query_id = 136563)
+    result_id = dune.query_result_id(query_id = id)
     data = dune.query_result(result_id)
     data2 = data['data']['get_result_by_result_id']
 
@@ -157,16 +159,15 @@ def makerdao_grabdata(init, results, login):
             times.append(time)
             values.append(val)
 
-    results.append((times[0], values[0], 1, 'makerDAO'))
+    if len(times) == 0 or len(values) == 0:
+        print("no makerDAO data retrieved")
+    
+    else:
+        results.append((times[0], values[0], 1, 'makerDAO'))
 
-    for i in range(1, len(values)):
-        if values[i] != values[i - 1]:
-            results.append((times[i], values[i], 1, 'makerDAO'))
-
-
-
-
-#heroku upsets me deeply
+        for i in range(1, len(values)):
+            if values[i] != values[i - 1]:
+                results.append((times[i], values[i], 1, 'makerDAO'))
 
 def fill_database(results, c, con):
     #c.executemany("insert into tellor_datatable values(?, ?, ?, ?)", results)
