@@ -6,5 +6,7 @@ plotly
 requests
 numpy
 gunicorn
-duneanalytics
+sqlalchemy
+psycopg2
 python-dotenv
+duneanalytics
