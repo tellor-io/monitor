@@ -6,11 +6,9 @@ from dash import html
 from dash import dash_table
 import plotly.express as px
 import sqlite3
-import numpy as np
 import pandas as pd
 import requests
 import time
-from datetime import datetime
 
 
 
@@ -148,7 +146,8 @@ fig2.update_layout(
     )
 )
 
-tellor_api = "http://api.tellorscan.com/prices/"
+# tellor_api = "http://api.tellorscan.com/prices/"
+tellor_api = "http://localhost:5000/mainnet/price/"
 id_ethusd = '0x0000000000000000000000000000000000000000000000000000000000000001'
 id_btcusd = '0x0000000000000000000000000000000000000000000000000000000000000002'
 id_amplusd = '0x000000000000000000000000000000000000000000000000000000000000000a'
@@ -156,37 +155,43 @@ id_trbusd = '0x0000000000000000000000000000000000000000000000000000000000000032'
 id_uspce = '0x0000000000000000000000000000000000000000000000000000000000000029'
 id_ethjpy = '0x000000000000000000000000000000000000000000000000000000000000003b'
 relevant_ids = [id_ethusd, id_btcusd, id_amplusd, id_uspce, id_trbusd, id_ethjpy]
-endpoint = "-".join(relevant_ids)
-full_url = tellor_api + endpoint
+
+dataspecs = {id_ethusd : "ETH/USD",
+            id_btcusd : "BTC/USD",
+            id_amplusd : "AMPL/USD",
+            id_uspce : "USPCE",
+            id_trbusd: "TRB/USD",
+            id_ethjpy: "ETH/JPY"}
 
 try:
-    r = requests.get(full_url)
-    files = r.json()
-    df_list = []
-    dataspecs = {id_ethusd : "ETH/USD",
-                id_btcusd : "BTC/USD",
-                id_amplusd : "AMPL/USD",
-                id_uspce : "USPCE",
-                id_trbusd: "TRB/USD",
-                id_ethjpy: "ETH/JPY"}
 
-    
-    for file in files:
-        diff = round((time.time() - int(file['timestamp'])) / 3600, 3)
-        curr_id = file['id']
-        df_list.append([dataspecs[curr_id], round(file['value'], 2), diff])
+    df_list = []
+    for qid in relevant_ids:
+        full_url = tellor_api + qid
+        r = requests.get(full_url)
+        most_recent_price_info = r.json()[0]
+        print(most_recent_price_info)
+        diff = round((time.time() - int(most_recent_price_info['timestamp'])) / 3600, 3)
+        if qid == id_amplusd or qid == id_uspce:
+            most_recent_price_info['value'] = most_recent_price_info['value'] / 1e12
+        df_list.append([dataspecs[qid], round(most_recent_price_info['value'], 2), diff])
 
     df_tab = pd.DataFrame(df_list, columns=['price feed', 'current price', 'hours since last update'])
 
-    url = 'https://api.tellorscan.com/info'
+except requests.exceptions.JSONDecodeError:
+    print("unable to grab price data of selected feeds")
+    df_tab = pd.DataFrame([], columns = ['price feed', 'current price', 'hours since last update'])
+
+
+try:
+    url = 'https://api.tellorscan.com/mainnet/info'
     r2 = requests.get(url)
     files2 = r2.json()
     df_list2 = [[files2['stakerCount'], files2['disputeCount']]]
     df_tab2 = pd.DataFrame(df_list2, columns = ['number of stakers', 'number of disputes'])
 
 except requests.exceptions.JSONDecodeError:
-    print("unable to retrieve data")
-    df_tab = pd.DataFrame([], columns = ['price feed', 'current price', 'hours since last update'])
+    print("unable to retrieve mainnet info data")
     df_tab2 = pd.DataFrame([], columns = ['number of stakers', 'number of disputes'])
 
 
