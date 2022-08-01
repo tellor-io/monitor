@@ -164,7 +164,6 @@ dataspecs = {id_ethusd : "ETH/USD",
             id_ethjpy: "ETH/JPY"}
 
 try:
-
     df_list = []
     for qid in relevant_ids:
         full_url = tellor_api + qid
