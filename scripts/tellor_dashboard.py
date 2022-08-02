@@ -6,22 +6,12 @@ from dash import html
 from dash import dash_table
 from datetime import datetime
 import plotly.express as px
-<<<<<<< HEAD
-import sqlite3
-=======
->>>>>>> b0bd97605de7d4cdd5ab61589fc6583bc37e721f
 import pandas as pd
 from sqlalchemy import create_engine
 import os
 import requests
 import time
-<<<<<<< HEAD
-
-
-
-=======
 from dotenv import load_dotenv
->>>>>>> b0bd97605de7d4cdd5ab61589fc6583bc37e721f
 
 app = dash.Dash(__name__)
 server = app.server
