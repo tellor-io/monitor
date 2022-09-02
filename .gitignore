@@ -150,3 +150,6 @@ env/
 .python-version
 *.csv
 dataquality/
+.DS_Store
+.idea/
+__pycache__/
