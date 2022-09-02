@@ -7,6 +7,6 @@ requests
 numpy
 gunicorn
 sqlalchemy
-psycopg2
+psycopg2==2.7.3.2 --no-binary psycopg2
 python-dotenv
 duneanalytics
