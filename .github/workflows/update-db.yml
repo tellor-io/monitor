@@ -18,6 +18,7 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    environment: tellormonitors
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -29,4 +30,12 @@ jobs:
           python-version: '3.9' 
       - run: python3 -m venv venv && source venv/bin/activate
       - run: pip install -r requirements.txt
-      - run: cd scripts && python monitor.py
+      - name: update DB
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_USER: ${{ secrets.DB_USER }}
+          HEROKU_POSTGRESQL_ONYX_URL: ${{ secrets.HEROKU_POSTGRESQL_ONYX_URL }}
+        run: cd scripts && python monitor.py
