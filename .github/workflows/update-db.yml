@@ -38,4 +38,5 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_USER: ${{ secrets.DB_USER }}
           HEROKU_POSTGRESQL_ONYX_URL: ${{ secrets.HEROKU_POSTGRESQL_ONYX_URL }}
+          INFURA_PROJECT_URL: ${{ secrets.INFURA_PROJECT_URL }}
         run: cd scripts && python monitor.py
