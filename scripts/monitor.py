@@ -84,9 +84,10 @@ def main():
     ds.ampl_grabdata(init, days_back, results, con)
 
     print('getting makerDAO data from dune analytics')
-    ds.makerdao_grabdata(init, results, dune_login, id=int(DUNE_QUERY_ID))
-    # ds.tellor_additional(init, tellor_con, filename)
-    # test change
+    try:
+        ds.makerdao_grabdata(init, results, dune_login, id=int(DUNE_QUERY_ID))
+    except:
+        print("unable to get makerdao data from dune")
 
     ds.fill_database(results, c, con)
 
