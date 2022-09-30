@@ -28,6 +28,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.9' 
+      - run: sudo apt-get install python3-dev
       - run: python3 -m venv venv && source venv/bin/activate
       - run: pip install -r requirements.txt
       - name: update DB
