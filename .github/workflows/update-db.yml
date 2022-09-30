@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: deployment
+          ref: main
       - uses: actions/setup-python@v4
         with:
           python-version: '3.9' 
