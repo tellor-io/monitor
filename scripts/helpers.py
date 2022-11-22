@@ -3,7 +3,7 @@ from datetime import datetime
 import os
 from sqlalchemy import create_engine
 from dotenv import load_dotenv
-load_dotenv('../.env')
+load_dotenv('.env')
 
 def get_enddate(oracle, reqid):
     engine_string = "postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}".format(

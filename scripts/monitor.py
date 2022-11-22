@@ -1,7 +1,4 @@
 import datasource as ds
-import helpers as h
-import sqlite3
-import psycopg2
 from psycopg2.extras import execute_values
 import os
 from dotenv import load_dotenv
@@ -9,7 +6,9 @@ import pandas as pd
 import json
 from web3 import Web3
 
-load_dotenv('../.env')
+from telliot_core.directory import contract_directory
+
+load_dotenv('.env')
 
 DATABASE_URL = os.getenv('DATABASE_URL')
 DB_HOST = os.getenv('DB_HOST')
@@ -43,16 +42,24 @@ dune_login = (DUNE_USERNAME, DUNE_PASSWORD)
 
 print(init)
 """
-init = False
+init = True
 
 days_back = 124
 results = []
-ids = [1, 2, 10]
+ids = [
+    "0x83a7f3d48786ac2667503a61e8c415438ed2922eb86a2906e4ee66d9a2ce4992",  # ID 1
+    "0xa6f013ee236804827b77696d350e9f0ac3e879328f2a3021d473a0b778ad78ac",  # ID 2
+    "0x0d12ad49193163bbbeff4e6db8294ced23ff8605359fd666799d4e25a3aa0e3a"   # ID 10 (ampl uspce)
+]
 
 infura_link = os.getenv('INFURA_PROJECT_URL')
-with open('../data/ext_data.json') as f:
+with open('data/ext_data.json') as f:
     data = json.load(f)
-tellor_dict = data['tellor']
+# tellor_dict = data['tellor']
+
+tellor_contract_info = contract_directory.find(name="tellor360-oracle", chain_id=1)[0]
+tellor_address = tellor_contract_info.address[1]
+tellor_abi = tellor_contract_info.get_abi(chain_id=1)
 chainlink_dict = data['chainlink']
 
 
@@ -62,7 +69,7 @@ def main():
 
     # create tellor contract, grab tellor data
     print('getting tellor data')
-    tellor_con = ds.create_contract(tellor_dict['address'], tellor_dict['abi'], w3)
+    tellor_con = ds.create_contract(tellor_address, tellor_abi, w3)
     ds.tellor_grabdata(init, ids, days_back, tellor_con, results, con)
 
     # create all of chainlink's contracts, grab chainlink's data (separately)

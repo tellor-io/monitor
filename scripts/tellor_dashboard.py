@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 app = dash.Dash(__name__)
 server = app.server
 
-load_dotenv('../.env')
+load_dotenv('.env')
 
 
 engine_string = "postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}".format(
@@ -28,7 +28,7 @@ engine_string = "postgresql+psycopg2://{user}:{password}@{host}:{port}/{database
 )
 
 engine = create_engine(engine_string, isolation_level="READ UNCOMMITTED")
-df = pd.read_sql_table('test',engine)
+df = pd.read_sql_table('t360',engine)
 df2 = df.sort_values(by = "time")
 
 ###################################
@@ -152,8 +152,8 @@ fig2.update_layout(
 
 
 ### TABLE FOR UPDATE MONITORING
-tellor_api = "http://api.tellorscan.com/price/"
-id_ethusd = '0x0000000000000000000000000000000000000000000000000000000000000001'
+tellor_api = "http://api.tellorscan.com/mainnet/price/"
+id_ethusd = '0x83a7f3d48786ac2667503a61e8c415438ed2922eb86a2906e4ee66d9a2ce4992'
 id_btcusd = '0x0000000000000000000000000000000000000000000000000000000000000002'
 id_amplusd = '0x000000000000000000000000000000000000000000000000000000000000000a'
 id_trbusd = '0x0000000000000000000000000000000000000000000000000000000000000032'

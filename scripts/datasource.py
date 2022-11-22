@@ -1,4 +1,4 @@
-#goal: create main data grabbing funcs (invlude boolean flag for init)
+#goal: create main data grabbing funcs (include boolean flag for init)
 import math
 import sqlite3
 import psycopg2
@@ -19,7 +19,7 @@ def database_connect(dbname, user, password, host):
                         keepalives_interval=10,
                         keepalives_count=15)
     c = con.cursor()
-    c.execute("CREATE TABLE IF NOT EXISTS test (time varchar, price float8, id integer, oracle varchar);")
+    c.execute("CREATE TABLE IF NOT EXISTS T360 (time varchar, price float8, id varchar, oracle varchar);")
     con.commit()
     return (c, con)
 
@@ -171,6 +171,6 @@ def makerdao_grabdata(init, results, login, id):
 
 def fill_database(results, c, con):
     #c.executemany("insert into tellor_datatable values(?, ?, ?, ?)", results)
-    execute_values(c,'INSERT INTO test (time, price, id, oracle) VALUES %s', results)
+    execute_values(c,'INSERT INTO T360 (time, price, id, oracle) VALUES %s', results)
     con.commit()
     con.close()
