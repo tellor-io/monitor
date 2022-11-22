@@ -13,6 +13,8 @@ import requests
 import time
 from dotenv import load_dotenv
 
+from monitor import eth_usd, btc_usd, ampl_uspce
+
 app = dash.Dash(__name__)
 server = app.server
 
@@ -36,7 +38,7 @@ df2 = df.sort_values(by = "time")
 ###################################
 
 ################################### FIGURE 0: ETH/USD (ID:1)
-fig = px.line(df2.loc[df2.id == 1], x="time", y="price",
+fig = px.line(df2.loc[df2.id == eth_usd], x="time", y="price",
               color='oracle', template='plotly', title='ETH/USD',
               color_discrete_sequence=['#898f8c','#3fd491', '#233047'])
 
@@ -75,7 +77,7 @@ fig.update_layout(
 
 ################################### FIGURE 1: BTC/USD (ID:2)
 
-fig1 = px.line(df2.loc[df2.id == 2], x="time", y="price",
+fig1 = px.line(df2.loc[df2.id == btc_usd], x="time", y="price",
                color="oracle", template='plotly', title='BTC/USD',
                color_discrete_sequence=['#3fd491', '#233047'])
 fig1.update_layout(xaxis_title='date', title_x=0.5)
@@ -114,7 +116,7 @@ fig1.update_layout(
 
 ################################### FIGURE 2: AMPL/USD
 # fig2 = px.line(df4, x="timestamp", y="price",template = 'plotly_dark', title = 'AMPL/USD price via Tellor')
-fig2 = px.line(df2.loc[df2.id == 10], x="time", y="price", template='plotly', title='AMPL/USD',
+fig2 = px.line(df2.loc[df2.id == ampl_uspce], x="time", y="price", template='plotly', title='AMPL/USD',
                color='oracle', color_discrete_sequence=['#3fd491', '#233047', 'mediumslateblue'])
 
 fig2.update_layout(xaxis_title='date', title_x=0.5)

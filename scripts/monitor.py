@@ -44,13 +44,13 @@ print(init)
 """
 init = True
 
+eth_usd = "0x83a7f3d48786ac2667503a61e8c415438ed2922eb86a2906e4ee66d9a2ce4992"  # ID 1
+btc_usd = "0xa6f013ee236804827b77696d350e9f0ac3e879328f2a3021d473a0b778ad78ac"  # ID 2
+ampl_uspce = "0x0d12ad49193163bbbeff4e6db8294ced23ff8605359fd666799d4e25a3aa0e3a"   # ID 10 (ampl uspce)
+
 days_back = 124
 results = []
-ids = [
-    "0x83a7f3d48786ac2667503a61e8c415438ed2922eb86a2906e4ee66d9a2ce4992",  # ID 1
-    "0xa6f013ee236804827b77696d350e9f0ac3e879328f2a3021d473a0b778ad78ac",  # ID 2
-    "0x0d12ad49193163bbbeff4e6db8294ced23ff8605359fd666799d4e25a3aa0e3a"   # ID 10 (ampl uspce)
-]
+ids = [eth_usd, btc_usd, ampl_uspce]
 
 infura_link = os.getenv('INFURA_PROJECT_URL')
 with open('data/ext_data.json') as f:
@@ -76,16 +76,16 @@ def main():
     # 1 - eth/usd
     print('getting chainlink data - eth/usd')
     cl_eth_usd = ds.create_contract(chainlink_dict['1']['address'], chainlink_dict['1']['abi'], w3)
-    ds.chainlink_grabdata(init, cl_eth_usd, 1, days_back, results, con, scale=1e8)
+    ds.chainlink_grabdata(init, cl_eth_usd, eth_usd, days_back, results, con, scale=1e8)
     # 2 - btc/usd
     print('getting chainlink data - btc/usd')
     cl_btc_usd = ds.create_contract(chainlink_dict['2']['address'], chainlink_dict['2']['abi'], w3)
-    ds.chainlink_grabdata(init, cl_btc_usd, 2, days_back, results, con, scale=1e8)
+    ds.chainlink_grabdata(init, cl_btc_usd, btc_usd, days_back, results, con, scale=1e8)
 
     # 10 - ampl/usd
     print('getting chainlink data - ampl/usd')
     cl_ampl_usd = ds.create_contract(chainlink_dict['10']['address'], chainlink_dict['10']['abi'], w3)
-    ds.chainlink_grabdata(init, cl_ampl_usd, 10, days_back, results, con, scale=1e18)
+    ds.chainlink_grabdata(init, cl_ampl_usd, ampl_uspce, days_back, results, con, scale=1e18)
 
     print('getting ampleforth data')
     ds.ampl_grabdata(init, days_back, results, con)
