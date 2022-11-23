@@ -13,7 +13,7 @@ import requests
 import time
 from dotenv import load_dotenv
 
-from monitor import eth_usd, btc_usd, ampl_uspce
+from src import eth_usd, btc_usd, ampl_uspce
 
 app = dash.Dash(__name__)
 server = app.server

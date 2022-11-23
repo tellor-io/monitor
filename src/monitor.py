@@ -6,6 +6,8 @@ import pandas as pd
 import json
 from web3 import Web3
 
+from scripts import eth_usd, btc_usd, ampl_uspce
+
 from telliot_core.directory import contract_directory
 
 load_dotenv('.env')
@@ -43,10 +45,6 @@ dune_login = (DUNE_USERNAME, DUNE_PASSWORD)
 print(init)
 """
 init = True
-
-eth_usd = "0x83a7f3d48786ac2667503a61e8c415438ed2922eb86a2906e4ee66d9a2ce4992"  # ID 1
-btc_usd = "0xa6f013ee236804827b77696d350e9f0ac3e879328f2a3021d473a0b778ad78ac"  # ID 2
-ampl_uspce = "0x0d12ad49193163bbbeff4e6db8294ced23ff8605359fd666799d4e25a3aa0e3a"   # ID 10 (ampl uspce)
 
 days_back = 124
 results = []
