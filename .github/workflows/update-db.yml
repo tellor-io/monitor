@@ -43,4 +43,4 @@ jobs:
           DUNE_USERNAME: ${{ secrets.DUNE_USERNAME }}
           DUNE_PASSWORD: ${{ secrets.DUNE_PASSWORD }}
           DUNE_QUERY_ID: ${{ secrets.DUNE_QUERY_ID }}
-        run: cd scripts && python monitor.py
+        run: python scripts/monitor.py

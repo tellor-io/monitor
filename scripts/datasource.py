@@ -1,6 +1,7 @@
-#goal: create main data grabbing funcs (invlude boolean flag for init)
+#goal: create main data grabbing funcs (include boolean flag for init)
 import math
 import sqlite3
+import time
 import psycopg2
 from psycopg2.extras import execute_values
 from web3 import Web3
@@ -19,7 +20,8 @@ def database_connect(dbname, user, password, host):
                         keepalives_interval=10,
                         keepalives_count=15)
     c = con.cursor()
-    c.execute("CREATE TABLE IF NOT EXISTS test (time varchar, price float8, id integer, oracle varchar);")
+    c.execute("DELETE FROM T360 WHERE PRICE = 0;")
+    c.execute("CREATE TABLE IF NOT EXISTS T360 (time varchar, price float8, id varchar, oracle varchar);")
     con.commit()
     return (c, con)
 
@@ -53,17 +55,18 @@ def tellor_additional(init, contract, filename):
 
 #tellor
 def tellor_grabdata(init, ids, days_back, contract, results, con):
-    scale = 1e6
+    scale = 1e18
     for id in ids:
-        tellor_data = contract.functions.getCurrentValue(id).call()
+        tellor_data = contract.functions.getDataBefore(id, int(time.time()) - 50).call()
         timestamp = datetime.fromtimestamp(int(tellor_data[2]))
-        if id == 10:
-            price = tellor_data[1] / 1e18
+        if id == "0x0d12ad49193163bbbeff4e6db8294ced23ff8605359fd666799d4e25a3aa0e3a": # ID 10
+            price = int.from_bytes(tellor_data[1], "big") / scale
 
         else:
-            price = tellor_data[1] / scale
+            price = int.from_bytes(tellor_data[1], "big") / scale
 
-        results.append((str(timestamp), price, id, 'tellor'))
+        if price > 0:
+            results.append((str(timestamp), price, id, 'tellor'))
 
         if init:
             old_date = (datetime.now() - timedelta(days = days_back))
@@ -73,14 +76,14 @@ def tellor_grabdata(init, ids, days_back, contract, results, con):
         while old_date < datetime.fromtimestamp(tellor_data[2]):
             tellor_data = contract.functions.getDataBefore(id, tellor_data[2]).call()
             timestamp = datetime.fromtimestamp(int(tellor_data[2]))
-            price = tellor_data[1] / scale
+            if price > 0:
+                price = int.from_bytes(tellor_data[1], "big") / scale
             if id == 10:
                 #if timestamp.hour == 0:
-                results.append((str(timestamp), price / 1e12, id, 'tellor'))
+                results.append((str(timestamp), price / scale, id, 'tellor'))
 
             else:
                 results.append((str(timestamp), price, id, 'tellor'))
-
 
 
 #chainlink
@@ -171,6 +174,6 @@ def makerdao_grabdata(init, results, login, id):
 
 def fill_database(results, c, con):
     #c.executemany("insert into tellor_datatable values(?, ?, ?, ?)", results)
-    execute_values(c,'INSERT INTO test (time, price, id, oracle) VALUES %s', results)
+    execute_values(c,'INSERT INTO T360 (time, price, id, oracle) VALUES %s', results)
     con.commit()
     con.close()

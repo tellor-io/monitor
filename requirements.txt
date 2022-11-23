@@ -10,3 +10,4 @@ sqlalchemy
 psycopg2 --no-binary psycopg2
 python-dotenv
 duneanalytics
+git+https://github.com/tellor-io/telliot-core.git
