@@ -172,10 +172,12 @@ try:
         most_recent_price_info = r.json()[0]
         print(most_recent_price_info)
         diff = round((time.time() - int(most_recent_price_info["timestamp"])) / 3600, 3)
-        if qid == id_amplusd or qid == id_uspce:
-            most_recent_price_info["value"] = most_recent_price_info["value"] / 1e12
+        # if qid == id_amplusd or qid == id_uspce:
+            # most_recent_price_info["value"] = most_recent_price_info["value"] / 1e12
+        # else:
+        most_recent_price_info["value"] = most_recent_price_info["value"] / 1e12
         df_list.append(
-            [dataspecs[qid], round(most_recent_price_info["value"] / 1e18, 2), diff]
+            [dataspecs[qid], round(most_recent_price_info["value"], 2), diff]
         )
 
     df_tab = pd.DataFrame(
