@@ -7,9 +7,9 @@
  3. Start venv by running: `source venv/bin/activate`
  4. Install needed dependencies by running: `pip install -r requirements.txt`
  5. Use example.env file to create a .env file that includes your infura endpoint, database credentials and dune login and query info
- 6. Run `python3 tellor_dashboard.py` to view the dashboard
-    * Note: The database file named tellor.db is in this directory and what you will be using. You can update it with more current values by running `python3 monitor.py`
- 7. Run `python3 monitor.py` to update the data on the dashboard, if needed.  
+ 6. Run `python -m src.tellor_dashboard` to view the dashboard
+    * Note: The database file named tellor.db is in this directory and what you will be using. You can update it with more current values by running `python -m src.monitor`
+ 7. Run `python -m src.monitor` to update the data on the dashboard, if needed.  
     * Note: to get accurate dune analytics data, copy this [query](https://dune.xyz/queries/136563). Change the date to when the last update to the database was. In the .env file, add the number in the url of your query as the DUNE_QUERY_ID
  8. Go to http://127.0.0.1:8050/ to view the dashboard locally
 
