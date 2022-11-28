@@ -175,7 +175,7 @@ try:
         if qid == id_amplusd or qid == id_uspce:
             most_recent_price_info["value"] = most_recent_price_info["value"] / 1e12
         df_list.append(
-            [dataspecs[qid], round(most_recent_price_info["value"], 2), diff]
+            [dataspecs[qid], round(most_recent_price_info["value"] / 1e18, 2), diff]
         )
 
     df_tab = pd.DataFrame(
