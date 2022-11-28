@@ -1,4 +1,4 @@
-import datasource as ds
+import src.datasource as ds
 from psycopg2.extras import execute_values
 import os
 from dotenv import load_dotenv
@@ -6,7 +6,7 @@ import pandas as pd
 import json
 from web3 import Web3
 
-from scripts import eth_usd, btc_usd, ampl_uspce
+from src import eth_usd, btc_usd, ampl_uspce
 
 from telliot_core.directory import contract_directory
 

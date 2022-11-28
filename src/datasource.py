@@ -8,7 +8,7 @@ from web3 import Web3
 from datetime import datetime, timedelta
 import requests
 import pandas as pd
-import helpers
+import src.helpers as helpers
 import math
 from duneanalytics import DuneAnalytics
 import os
@@ -20,7 +20,6 @@ def database_connect(dbname, user, password, host):
                         keepalives_interval=10,
                         keepalives_count=15)
     c = con.cursor()
-    c.execute("DELETE FROM T360 WHERE PRICE = 0;")
     c.execute("CREATE TABLE IF NOT EXISTS T360 (time varchar, price float8, id varchar, oracle varchar);")
     con.commit()
     return (c, con)
@@ -175,5 +174,6 @@ def makerdao_grabdata(init, results, login, id):
 def fill_database(results, c, con):
     #c.executemany("insert into tellor_datatable values(?, ?, ?, ?)", results)
     execute_values(c,'INSERT INTO T360 (time, price, id, oracle) VALUES %s', results)
+    c.execute("DELETE FROM T360 WHERE PRICE = 0;")
     con.commit()
     con.close()
