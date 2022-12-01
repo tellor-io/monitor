@@ -1,4 +1,5 @@
-
+# Tellor Values Monitor
+A visual monitor/dashboard for comparing Tellor values to other oracles, for seeing the since last update of price feeds, and viewing high-level data such as number of mainnet stakers and number of disputes.
 
 ### To run:
 
