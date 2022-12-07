@@ -194,15 +194,14 @@ except requests.exceptions.JSONDecodeError:
 try:
     url = "https://api.tellorscan.com/mainnet/info"
     r2 = requests.get(url)
-    files2 = r2.json()
-    df_list2 = [[files2["stakerCount"], files2["disputeCount"]]]
-    df_tab2 = pd.DataFrame(
-        df_list2, columns=["number of stakers", "number of disputes"]
-    )
+    mainnet_info_dict = dict(r2.json())
+    mainnet_info_dict = {key : int(mainnet_info_dict[key]) for key in mainnet_info_dict.keys()}
+    mainnet_info_df = pd.DataFrame([mainnet_info_dict])
+    mainnet_info_df.drop(columns="timeOfLastNewValue", inplace=True)
 
 except requests.exceptions.JSONDecodeError:
     print("unable to retrieve mainnet info data")
-    df_tab2 = pd.DataFrame([], columns=["number of stakers", "number of disputes"])
+    mainnet_info_df = pd.DataFrame([], columns=["number of stakers", "number of disputes"])
 
 
 app.layout = html.Div(
@@ -252,8 +251,15 @@ app.layout = html.Div(
                         html.Br(),
                         dash_table.DataTable(
                             id="table2_id",
-                            columns=[{"name": i, "id": i} for i in df_tab2.columns],
-                            data=df_tab2.to_dict("records"),
+                            columns=[{"name": i, "id": i} for i in mainnet_info_df.columns[:3]],
+                            data=mainnet_info_df.to_dict("records"),
+                            style_cell={"textAlign": "center"},
+                            style_data={"color": "mediumslategray"},
+                        ),
+                        dash_table.DataTable(
+                            id="table3_id",
+                            columns=[{"name": i, "id": i} for i in mainnet_info_df.columns[3:]],
+                            data=mainnet_info_df.to_dict("records"),
                             style_cell={"textAlign": "center"},
                             style_data={"color": "mediumslategray"},
                         ),
